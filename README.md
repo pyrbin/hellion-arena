@@ -10,7 +10,7 @@
 
 ## Info
 
-## Developer
+## Developers
 
 <table>
   <tbody>
