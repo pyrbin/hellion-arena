@@ -2,7 +2,9 @@
 
 ## Celestial Arena (wip name)
 
-**Celestial Arena** is a turn-based multiplayer game based on the Arena mode of Divinity: Original Sin 2 made in Unity DOTS.
+**Celestial Arena** is a **turn-based multiplayer game** based on the Arena mode of **Divinity: Original Sin 2** made in **Unity DOTS**.
+
+<br>
 
 #### Table of Contents
 
@@ -11,13 +13,14 @@
   - [DOTS](#DOTS)
 
 ## Introduction
-
+TODO
 ## Resources
 
-### DOTS / ECS
-
-Template code for components & systems exists in `Assets > Create > DOTS`.
-
+### DOTS
+#### Editor
+- `Assets > Create > DOTS` - Template code.
+- `Window > Analysis > Entity Debugger` - DOTS debugger window.
+#### Links
 - 📋 [Documentation](https://docs.unity3d.com/Packages/com.unity.entities@0.7/manual/ecs_core.html)
 - 🎓Tutorials
   - [Pong game](https://www.youtube.com/watch?v=a9AUXNFBWt4)
@@ -36,13 +39,13 @@ Template code for components & systems exists in `Assets > Create > DOTS`.
             pyrbin
         </a>
       </td>
-      <td align="center" valign="top">
+      <td align="center" valign="top" style="padding-right:10px">
         <a href="https://github.com/smultronbusken">
             <img width="100" height="100" src="https://github.com/smultronbusken.png?s=100">
             <br>
             smultron
         </a>
       </td>
-     </tr>
+    </tr>
   </tbody>
 </table>
