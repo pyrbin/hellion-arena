@@ -17,13 +17,14 @@ public class #SCRIPTNAME# : JobComponentSystem
     {
         float dt = Time.DeltaTime;
 
-        return Entities
+        Entities
             .ForEach((Entity entt) =>
             {
                 // system logic ...
             })
-            .Schedule(inputDeps);
+            .Run();
 
+        return default;
     }
     
     protected override void OnDestroy()
