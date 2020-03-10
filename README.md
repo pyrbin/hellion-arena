@@ -1,14 +1,28 @@
 <a href="#"><img id="#logo" align="left" src="https://via.placeholder.com/100" width="150" height="150" style="margin-right: 15px;"></a>
 
-## celestial arena
+## Celestial Arena (wip name)
 
-**celestial arena** is lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut **labore** et dolore magna aliqua. Ut enim ad **minim veniam**, quis nostrud exercitation ullamco laboris nisi
+**Celestial Arena** is a turn-based multiplayer game based on the Arena mode of Divinity: Original Sin 2 made in Unity DOTS.
 
 #### Table of Contents
 
-- [Info](#Info)
+- [Introduction](#Introduction)
+- [Resources](#Resources)
+  - [DOTS](#DOTS)
 
-## Info
+## Introduction
+
+## Resources
+
+### DOTS / ECS
+
+Template code for components & systems exists in `Assets > Create > DOTS`.
+
+- 📋 [Documentation](https://docs.unity3d.com/Packages/com.unity.entities@0.7/manual/ecs_core.html)
+- 🎓Tutorials
+  - [Pong game](https://www.youtube.com/watch?v=a9AUXNFBWt4)
+  - [DOTS sample](https://github.com/Unity-Technologies/DOTSSample)
+  - [DOTS-training-samples](https://github.com/Unity-Technologies/DOTS-training-samples)
 
 ## Developers
 
