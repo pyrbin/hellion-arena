@@ -1,0 +1,11 @@
+﻿using Unity.Entities;
+using UnityEngine;
+
+/// <summary>
+/// #SCRIPTNAME#
+/// </summary>
+[GenerateAuthoringComponent]
+public class #SCRIPTNAME# : IComponentData
+{
+    // data fields ...
+}

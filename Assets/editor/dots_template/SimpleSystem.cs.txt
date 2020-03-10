@@ -1,0 +1,36 @@
+﻿using Unity.Entities;
+using Unity.Jobs;
+using Unity.Mathematics;
+using Unity.Transforms;
+using UnityEngine;
+
+/// <summary>
+/// #SCRIPTNAME#
+/// </summary>
+[AlwaysSynchronizeSystem]
+public class #SCRIPTNAME# : JobComponentSystem
+{
+    protected override void OnCreate()
+    {
+        // on create ...
+    }
+
+    protected override JobHandle OnUpdate(JobHandle handle)
+    {
+        float dt = Time.DeltaTime;
+
+        Entities
+            .ForEach((Entity entt) =>
+            {
+                // system logic ...
+            })
+            .Run();
+
+        return default;
+    }
+    
+    protected override void OnDestroy()
+    {
+        // on destroy ...
+    }
+}
