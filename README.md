@@ -22,6 +22,7 @@ TODO
 
 - [Code Monkey (good tutorials)](https://www.youtube.com/channel/UCFK6NCbuCIVzA6Yj1G_ZqCg/videos)
 - [DOTS Sample (netcode + dots + physics)](https://github.com/Unity-Technologies/DOTSSample)
+- [Turn-based game prototype using ECS ](https://www.youtube.com/watch?v=mL4qrt-15TE)
 
 ### DOTS
 
@@ -46,6 +47,11 @@ TODO
   - [DOTS-training-samples](https://github.com/Unity-Technologies/DOTS-training-samples)
 
 ### Physics
+
+#### Navigation
+
+- [DOTS NavMesh](https://github.com/reeseschultz/ReeseUnityDemos/blob/master/Packages/com.reese.nav/README.md)
+- [UnityAStarNavigation](https://github.com/jeffvella/UnityAStarNavigation)
 
 #### Links
 
