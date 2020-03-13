@@ -29,7 +29,7 @@ public class MoveSystem : JobComponentSystem
         var cmdBuffer = cmdBufferSystem.CreateCommandBuffer().ToConcurrent();
 
         inputDeps = Entities
-            .ForEach((Entity e, int entityInQueryIndex, ref DynamicBuffer<Waypoint> waypoints, ref Translation translation, ref Rotation rotation, ref PhysicsVelocity vel) =>
+            .ForEach((Entity e, int entityInQueryIndex, ref DynamicBuffer<Waypoint> waypoints, ref Translation translation, ref Rotation rotation) =>
             {
                 if (waypoints.Length < 1)
                 {
@@ -38,14 +38,14 @@ public class MoveSystem : JobComponentSystem
                 };
 
                 var wp = waypoints[waypoints.Length - 1];
-                var stepSize = 150f * dt;
+                var stepSize = 10f * dt;
                 var direction = wp.Value - translation.Value;
 
                 if (math.length(direction.xz) > 0.1f)
                 {
                     direction = math.normalize(direction);
                     rotation.Value = quaternion.LookRotation(direction, math.up());
-                    vel.Linear.xz = direction.xz * stepSize;
+                    translation.Value.xz += direction.xz * stepSize;
                 }
                 else if (waypoints.Length >= 1)
                 {

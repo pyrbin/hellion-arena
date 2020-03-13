@@ -2,6 +2,7 @@
 using Unity.Jobs;
 using Unity.Mathematics;
 using Unity.Physics;
+using Unity.Transforms;
 using UnityEngine;
 using RaycastHit = Unity.Physics.RaycastHit;
 
@@ -33,7 +34,7 @@ public class MouseInputSystem : JobComponentSystem
         Entities
             .WithAll<Player>()
             .WithStructuralChanges() // Use CmdBuffer instead
-            .ForEach((Entity entt) =>
+            .ForEach((Entity entt, ref Translation translation) =>
             {
                 if (EntityManager.HasComponent<Waypoint>(entt))
                 {
@@ -41,7 +42,7 @@ public class MouseInputSystem : JobComponentSystem
                 }
                 // EntityManager.AddComponentData(entt, new PathRequest { To = dst });
                 var waypoints = EntityManager.AddBuffer<Waypoint>(entt);
-                waypoints.Add(new Waypoint() { Value = dst });
+                waypoints.Add(new Waypoint() { Value = new float3(dst.x, translation.Value.y, dst.z) });
             })
             .WithoutBurst()
             .Run();
