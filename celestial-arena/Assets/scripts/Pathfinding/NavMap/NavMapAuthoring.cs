@@ -8,7 +8,7 @@ using UnityEngine;
 [AddComponentMenu("Navigation/Navigation Map")]
 public class NavMapAuthoring : MonoBehaviour, IConvertGameObjectToEntity
 {
-    public float TileSize;
+    public float NodeSize;
     public int3 Size;
 
     public void Convert(Entity entity, EntityManager dstManager, GameObjectConversionSystem conversionSystem)
@@ -16,7 +16,7 @@ public class NavMapAuthoring : MonoBehaviour, IConvertGameObjectToEntity
         dstManager.AddComponentData(entity, new NavMapCreate
         {
             Size = Size,
-            TileSize = TileSize,
+            NodeSize = NodeSize,
             Transform = new transform3d(transform)
         });
     }

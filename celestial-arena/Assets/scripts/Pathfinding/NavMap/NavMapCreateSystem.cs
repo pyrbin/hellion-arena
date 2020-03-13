@@ -18,16 +18,16 @@ public unsafe class NavMapCreateSystem : JobComponentSystem
             .ForEach((Entity entity, ref NavMapCreate create) =>
             {
                 var size = create.Size;
-                var tileSize = create.TileSize;
+                var nodeSize = create.NodeSize;
                 var transform = create.Transform;
 
                 var blobBuilder = new BlobBuilder(Allocator.Temp);
                 ref var navMapBlob = ref blobBuilder.ConstructRoot<NavMapBlob>();
 
-                var tiles = blobBuilder.Allocate(ref navMapBlob.Nodes, NavMap.NodeCount(size));
+                var nodes = blobBuilder.Allocate(ref navMapBlob.Nodes, NavMap.NodeCount(size));
 
                 navMapBlob.Size = size;
-                navMapBlob.TileSize = tileSize;
+                navMapBlob.NodeSize = nodeSize;
                 navMapBlob.Transform = transform;
 
                 for (int x = 0; x < size.x; x++)
@@ -37,13 +37,13 @@ public unsafe class NavMapCreateSystem : JobComponentSystem
                         for (int z = 0; z < size.z; z++)
                         {
                             var coord = new int3(x, y, z);
-                            var centerPos = transform.GetWorldPos(NavMap.ToCenterPos(coord, tileSize));
+                            var centerPos = transform.GetWorldPos(NavMap.ToCenterPos(coord, nodeSize));
 
-                            tiles[NavMap.GetIndex(coord, size)] = new NavMapNode
+                            nodes[NavMap.GetIndex(coord, size)] = new NavMapNode
                             {
                                 Coord = coord,
                                 Walkable = true,
-                                Aabb = CreateBoxAABB(centerPos, new float3(1) * tileSize, quaternion.identity)
+                                Aabb = CreateBoxAABB(centerPos, new float3(1) * nodeSize, quaternion.identity)
                             };
                         }
                     }

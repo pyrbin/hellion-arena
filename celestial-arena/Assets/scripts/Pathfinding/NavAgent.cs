@@ -2,7 +2,7 @@
 using Unity.Mathematics;
 
 [GenerateAuthoringComponent]
-public struct Player : IComponentData
+public struct NavAgent : IComponentData
 {
 }
 

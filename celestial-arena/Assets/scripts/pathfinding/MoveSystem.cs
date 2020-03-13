@@ -24,13 +24,12 @@ public class MoveSystem : JobComponentSystem
             {
                 if (waypoints.Length < 1)
                 {
-                    cmdBuffer.AddComponent<NavMapBuild>(entityInQueryIndex, e);
                     cmdBuffer.RemoveComponent<Waypoint>(entityInQueryIndex, e);
                     return;
                 };
 
                 var wp = waypoints[waypoints.Length - 1];
-                var stepSize = 10f * dt;
+                var stepSize = 5f * dt;
                 var direction = wp.Value - translation.Value;
 
                 if (math.length(direction.xz) > 0.1f)
@@ -41,6 +40,7 @@ public class MoveSystem : JobComponentSystem
                 }
                 else if (waypoints.Length >= 1)
                 {
+                    cmdBuffer.AddComponent<NavMapBuild>(entityInQueryIndex, e);
                     waypoints.RemoveAt(waypoints.Length - 1);
                 }
             }).Schedule(inputDeps);

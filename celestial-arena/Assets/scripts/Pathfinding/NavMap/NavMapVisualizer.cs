@@ -41,10 +41,10 @@ public class NavMapVisualizer : MonoBehaviour
             Gizmos.matrix = navmap.Transform.ToWorldMatrix;
             Gizmos.color = node.Walkable ? NormalColor : UnwalkableColor;
 
-            var centerPos = navmap.Transform.GetWorldPos(NavMap.ToCenterPos(node.Coord, navmap.TileSize));
+            var centerPos = navmap.Transform.GetWorldPos(NavMap.ToCenterPos(node.Coord, navmap.NodeSize));
 
-            if (WireCubes) Gizmos.DrawWireCube(centerPos, new float3(navmap.TileSize, 0, navmap.TileSize));
-            else Gizmos.DrawCube(centerPos, new float3(navmap.TileSize, 0, navmap.TileSize));
+            if (WireCubes) Gizmos.DrawWireCube(centerPos, new float3(navmap.NodeSize, 0, navmap.NodeSize));
+            else Gizmos.DrawCube(centerPos, new float3(navmap.NodeSize, 0, navmap.NodeSize));
         }
     }
 }

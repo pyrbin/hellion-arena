@@ -30,17 +30,18 @@ public class MouseInputSystem : JobComponentSystem
             return default;
         }
 
-        var dst = (destination);
+        var dst = destination;
         var dt = Time.fixedDeltaTime;
 
         Entities
-            .WithAll<Player>()
+            .WithAll<NavAgent>()
+            .WithNone<PathRequest, Waypoint>()
             .WithStructuralChanges() // Use CmdBuffer instead
-            .ForEach((Entity entt, ref Translation translation) =>
+            .ForEach((Entity entity) =>
             {
-                //EntityManager.AddComponentData(entt, new PathRequest { To = dst });
-                var waypoints = EntityManager.AddBuffer<Waypoint>(entt);
-                waypoints.Add(new Waypoint() { Value = new float3(dst.x, translation.Value.y, dst.z) });
+                EntityManager.AddComponentData(entity, new PathRequest { To = dst });
+                //var waypoints = EntityManager.AddBuffer<Waypoint>(entt);
+                //waypoints.Add(new Waypoint() { Value = new float3(dst.x, translation.Value.y, dst.z) });
             })
             .WithoutBurst()
             .Run();
