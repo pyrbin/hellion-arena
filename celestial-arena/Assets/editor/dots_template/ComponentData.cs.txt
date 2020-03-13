@@ -4,7 +4,7 @@
 /// #SCRIPTNAME#
 /// </summary>
 [GenerateAuthoringComponent]
-public class #SCRIPTNAME# : IComponentData
+public struct #SCRIPTNAME# : IComponentData
 {
     // data fields ...
 }
