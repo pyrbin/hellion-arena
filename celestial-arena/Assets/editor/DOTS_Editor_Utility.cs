@@ -3,11 +3,11 @@ using UnityEngine;
 
 public class DOTS_Editor_Utility : MonoBehaviour
 {
-    private const string COMPONENT_DATA_SCRIPT_PATH = "Assets/editor/dots_template/ComponentData.cs.txt";
-    private const string COMPONENT_BUFFER_SCRIPT_PATH = "Assets/editor/dots_template/ComponentBuffer.cs.txt";
-    private const string SIMPLE_SYSTEM_SCRIPT_PATH = "Assets/editor/dots_template/SimpleSystem.cs.txt";
-    private const string SIMPLE_JOB_SYSTEM_SCRIPT_PATH = "Assets/editor/dots_template/SimpleJobSystem.cs.txt";
-    private const string JOB_SYSTEM_SCRIPT_PATH = "Assets/editor/dots_template/JobSystem.cs.txt";
+    private const string COMPONENT_DATA_SCRIPT_PATH = "Assets/Editor/Templates/ComponentData.cs.txt";
+    private const string COMPONENT_BUFFER_SCRIPT_PATH = "Assets/Editor/Templates/ComponentBuffer.cs.txt";
+    private const string SIMPLE_SYSTEM_SCRIPT_PATH = "Assets/Editor/Templates/SimpleSystem.cs.txt";
+    private const string SIMPLE_JOB_SYSTEM_SCRIPT_PATH = "Assets/Editor/Templates/SimpleJobSystem.cs.txt";
+    private const string JOB_SYSTEM_SCRIPT_PATH = "Assets/Editor/Templates/JobSystem.cs.txt";
 
     [MenuItem(itemName: "Assets/Create/DOTS/Objects/Component", isValidateFunction: false, priority: 1)]
     public static void CreateComponentDataScript()

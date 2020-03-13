@@ -154,9 +154,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   NodeSize: 1
   Size:
-    x: 300
+    x: 50
     y: 1
-    z: 300
+    z: 50
 --- !u!4 &320161977
 Transform:
   m_ObjectHideFlags: 0
