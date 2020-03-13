@@ -6,25 +6,16 @@ using Unity.Transforms;
 
 public class MoveSystem : JobComponentSystem
 {
-    private Entity Map;
-    private EntityQuery MapQuery;
-
     private EndSimulationEntityCommandBufferSystem cmdBufferSystem;
-
-    protected override void OnCreate() => cmdBufferSystem = World.GetExistingSystem<EndSimulationEntityCommandBufferSystem>();
-
-    /*
 
     protected override void OnCreate()
     {
-        RequireForUpdate(
-            MapQuery = GetEntityQuery(ComponentType.ReadOnly<Map>(), ComponentType.ReadWrite<Tilemap>())
-        );
-        */
+        RequireSingletonForUpdate<NavMap>();
+        cmdBufferSystem = World.GetExistingSystem<EndSimulationEntityCommandBufferSystem>();
+    }
 
     protected override JobHandle OnUpdate(JobHandle inputDeps)
     {
-        // Map = MapQuery.GetSingletonEntity();
         var dt = Time.fixedDeltaTime;
         var cmdBuffer = cmdBufferSystem.CreateCommandBuffer().ToConcurrent();
 
@@ -33,6 +24,7 @@ public class MoveSystem : JobComponentSystem
             {
                 if (waypoints.Length < 1)
                 {
+                    cmdBuffer.AddComponent<NavMapBuild>(entityInQueryIndex, e);
                     cmdBuffer.RemoveComponent<Waypoint>(entityInQueryIndex, e);
                     return;
                 };
@@ -54,6 +46,9 @@ public class MoveSystem : JobComponentSystem
             }).Schedule(inputDeps);
 
         cmdBufferSystem.AddJobHandleForProducer(inputDeps);
+
+        inputDeps.Complete();
+
         return inputDeps;
     }
 }

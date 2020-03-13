@@ -15,6 +15,8 @@ public class MouseInputSystem : JobComponentSystem
     private const float RAYCAST_DISTANCE = 100f;
     private float3 destination;
 
+    protected override void OnCreate() => RequireSingletonForUpdate<NavMap>();
+
     protected override JobHandle OnUpdate(JobHandle inputDeps)
     {
         var result = new RaycastHit();
@@ -36,11 +38,7 @@ public class MouseInputSystem : JobComponentSystem
             .WithStructuralChanges() // Use CmdBuffer instead
             .ForEach((Entity entt, ref Translation translation) =>
             {
-                if (EntityManager.HasComponent<Waypoint>(entt))
-                {
-                    EntityManager.RemoveComponent<Waypoint>(entt);
-                }
-                // EntityManager.AddComponentData(entt, new PathRequest { To = dst });
+                //EntityManager.AddComponentData(entt, new PathRequest { To = dst });
                 var waypoints = EntityManager.AddBuffer<Waypoint>(entt);
                 waypoints.Add(new Waypoint() { Value = new float3(dst.x, translation.Value.y, dst.z) });
             })
