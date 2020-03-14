@@ -24,13 +24,13 @@ public class MouseInputSystem : JobComponentSystem
         if (!MouseRaycast(RAYCAST_DISTANCE, out destination))
             return default;
 
-        if (Input.GetMouseButtonDown(0))
+        var indicatorColor = Input.GetMouseButton(0) ? Color.green : Color.white;
+        var indicatorSize = Input.GetMouseButton(0) ? .22f : .33f;
+
+        DebugExtension.DebugCircle(destination, indicatorColor, indicatorSize);
+
+        if (!Input.GetMouseButtonDown(0))
         {
-            DebugExtension.DebugCircle(destination, Color.green, .22f);
-        }
-        else
-        {
-            DebugExtension.DebugCircle(destination, .33f);
             return default;
         }
 
