@@ -24,6 +24,7 @@ public class MouseInputSystem : JobComponentSystem
         if (Input.GetMouseButton(0) && MouseRaycast(RAYCAST_DISTANCE, out result))
         {
             destination = result.Position;
+            DebugExtension.DebugPoint(destination, 1);
         }
         else
         {

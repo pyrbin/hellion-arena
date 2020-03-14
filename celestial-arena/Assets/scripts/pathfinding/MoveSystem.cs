@@ -3,6 +3,7 @@ using Unity.Jobs;
 using Unity.Mathematics;
 using Unity.Physics;
 using Unity.Transforms;
+using UnityEngine;
 
 public class MoveSystem : JobComponentSystem
 {
@@ -27,6 +28,13 @@ public class MoveSystem : JobComponentSystem
                     cmdBuffer.RemoveComponent<Waypoint>(entityInQueryIndex, e);
                     return;
                 };
+
+                // Draw lines
+                for (int i = waypoints.Length - 1; i >= 0; i--)
+                {
+                    var src = i == waypoints.Length - 1 ? translation.Value : waypoints[i + 1].Value;
+                    Debug.DrawLine(src, waypoints[i].Value, Color.green);
+                }
 
                 var wp = waypoints[waypoints.Length - 1];
                 var stepSize = 5f * dt;
