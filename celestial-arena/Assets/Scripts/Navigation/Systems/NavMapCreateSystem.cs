@@ -7,6 +7,7 @@ using Unity.Physics;
 using UnityEngine;
 
 [WorldSystemFilter(WorldSystemFilterFlags.Default | WorldSystemFilterFlags.EntitySceneOptimizations)]
+[UpdateInGroup(typeof(SimulationSystemGroup))]
 [AlwaysSynchronizeSystem]
 public unsafe class NavMapCreateSystem : JobComponentSystem
 {

@@ -1,9 +1,9 @@
 ﻿using Unity.Entities;
 using Unity.Jobs;
 using Unity.Mathematics;
+using Unity.NetCode;
 using Unity.Physics;
 using Unity.Physics.Systems;
-using Unity.Transforms;
 using UnityEngine;
 using RaycastHit = Unity.Physics.RaycastHit;
 
@@ -11,6 +11,7 @@ using RaycastHit = Unity.Physics.RaycastHit;
 /// InputSystem
 /// </summary>
 [AlwaysSynchronizeSystem]
+[UpdateInWorld(UpdateInWorld.TargetWorld.Client)]
 public class MouseInputSystem : JobComponentSystem
 {
     private const float RAYCAST_DISTANCE = 120f;

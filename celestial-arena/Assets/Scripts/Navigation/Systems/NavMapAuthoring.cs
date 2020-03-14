@@ -5,6 +5,7 @@ using UnityEngine;
 
 // ReSharper disable once InconsistentNaming
 [RequiresEntityConversion]
+[UpdateInGroup(typeof(SimulationSystemGroup))]
 [AddComponentMenu("Navigation/Navigation Map")]
 public class NavMapAuthoring : MonoBehaviour, IConvertGameObjectToEntity
 {

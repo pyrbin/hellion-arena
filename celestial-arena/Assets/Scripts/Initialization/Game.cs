@@ -9,13 +9,12 @@ using Unity.Burst;
 public class Game : ComponentSystem
 {
     // Singleton component to trigger connections once from a control system
-    private struct InitGameComponent : IComponentData
-    {
-    }
+    private struct InitGameComponent : IComponentData { }
 
     protected override void OnCreate()
     {
         RequireSingletonForUpdate<InitGameComponent>();
+
         // Create singleton, require singleton for update so system runs once
         EntityManager.CreateEntity(typeof(InitGameComponent));
     }
@@ -24,6 +23,7 @@ public class Game : ComponentSystem
     {
         // Destroy singleton to prevent system from running again
         EntityManager.DestroyEntity(GetSingletonEntity<InitGameComponent>());
+
         foreach (var world in World.All)
         {
             var network = world.GetExistingSystem<NetworkStreamReceiveSystem>();

@@ -12,9 +12,7 @@ public struct NavMapCreate : IComponentData
     public transform3d Transform;
 }
 
-public struct NavMapBuild : IComponentData
-{
-}
+public struct NavMapBuild : IComponentData { }
 
 public struct NavMap : IComponentData
 {

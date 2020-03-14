@@ -5,6 +5,7 @@ using Unity.Physics;
 using Unity.Transforms;
 using UnityEngine;
 
+[UpdateInGroup(typeof(SimulationSystemGroup))]
 public class MoveWaypointSystem : JobComponentSystem
 {
     private readonly static bool REQUEST_BUILD_MAP_ON_MOVE = true;

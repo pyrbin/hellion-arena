@@ -17,10 +17,11 @@ public class NavMapVisualizer : MonoBehaviour
     public bool HasSpawned(out NavMap? navmap)
     {
         navmap = null;
+        var world = WorldUtil.ClientWorld;
 
-        if (World.DefaultGameObjectInjectionWorld == null) return false;
+        if (world == null) return false;
 
-        var em = World.DefaultGameObjectInjectionWorld.EntityManager;
+        var em = world.EntityManager;
 
         var q = em.CreateEntityQuery(typeof(NavMap));
         if (q.CalculateEntityCount() <= 0) return false;

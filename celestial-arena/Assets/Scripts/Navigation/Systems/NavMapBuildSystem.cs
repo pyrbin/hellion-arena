@@ -8,6 +8,7 @@ using Unity.Physics;
 using Unity.Transforms;
 using UnityEngine;
 
+[UpdateInGroup(typeof(SimulationSystemGroup))]
 public unsafe class NavMapBuildSystem : JobComponentSystem
 {
     public NativeMultiHashMap<int, bool> Walkables;

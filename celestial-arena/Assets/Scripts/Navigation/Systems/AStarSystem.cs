@@ -8,6 +8,7 @@ using Unity.Transforms;
 
 // AStarSystem
 // TODO: Add more advanced Pathfinding, avoidance, agent size/height, 3D navigation
+[UpdateInGroup(typeof(SimulationSystemGroup))]
 public unsafe class AStarSystem : JobComponentSystem
 {
     private EndSimulationEntityCommandBufferSystem cmdBufferSystem;
@@ -42,6 +43,13 @@ public unsafe class AStarSystem : JobComponentSystem
             .WithNativeDisableUnsafePtrRestriction(ptr)
             .ForEach((Entity entity, int entityInQueryIndex, ref PathRequest req, ref Translation translation) =>
             {
+                // Currently only uses X & Z coordinates (no Y-axis movement)
+                int endIdx = NavMap.GetIndex(new float3(req.To.x, translation.Value.y, req.To.z), nodeSize, mapSize);
+                int startIdx = NavMap.GetIndex(translation.Value, nodeSize, mapSize);
+
+                // If destination node is invalid skip AStar search.
+                if (!NavMap.NotOutOfBounds(ptr[endIdx].Coord, mapSize) || !ptr[endIdx].Walkable) return;
+
                 var openList = new NativeList<int>(Allocator.Temp);
                 var closeList = new NativeList<int>(Allocator.Temp);
                 var costs = new NativeArray<Cost>(count, Allocator.Temp, NativeArrayOptions.UninitializedMemory);
@@ -52,10 +60,6 @@ public unsafe class AStarSystem : JobComponentSystem
                     costs[i] = new Cost { G = float.MaxValue, H = 0 };
                     cameFrom[i] = -1;
                 }
-
-                // Currently only uses X & Z coordinates (no Y-axis movement)
-                int endIdx = NavMap.GetIndex(new float3(req.To.x, translation.Value.y, req.To.z), nodeSize, mapSize);
-                int startIdx = NavMap.GetIndex(translation.Value, nodeSize, mapSize);
 
                 var startCost = costs[startIdx];
                 startCost.G = 0;
