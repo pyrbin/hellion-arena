@@ -18,6 +18,8 @@ public class NavMapVisualizer : MonoBehaviour
     {
         navmap = null;
 
+        if (World.DefaultGameObjectInjectionWorld == null) return false;
+
         var em = World.DefaultGameObjectInjectionWorld.EntityManager;
 
         var q = em.CreateEntityQuery(typeof(NavMap));
@@ -29,6 +31,7 @@ public class NavMapVisualizer : MonoBehaviour
     public unsafe void OnDrawGizmos()
     {
         if (!Enable) return;
+
         NavMap? fetch;
 
         if (!HasSpawned(out fetch)) return;

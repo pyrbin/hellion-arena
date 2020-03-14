@@ -4,7 +4,7 @@ using Unity.Mathematics;
 /// <summary>
 /// Waypoint
 /// </summary>
-[InternalBufferCapacity(25)]
+[InternalBufferCapacity(32)]
 public struct Waypoint : IBufferElementData
 {
     public float3 Value;

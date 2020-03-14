@@ -8,7 +8,10 @@ using UnityEngine;
 [AddComponentMenu("Navigation/Navigation Map")]
 public class NavMapAuthoring : MonoBehaviour, IConvertGameObjectToEntity
 {
+    [Header("Map Settings")]
+    [Comment("Navigation Map only works in positive coordinate space!", CommentType.Warning)]
     public float NodeSize;
+
     public int3 Size;
 
     public void Convert(Entity entity, EntityManager dstManager, GameObjectConversionSystem conversionSystem)
