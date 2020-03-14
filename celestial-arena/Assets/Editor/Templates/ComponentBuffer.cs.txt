@@ -1,0 +1,11 @@
+﻿using Unity.Entities;
+
+/// <summary>
+/// #SCRIPTNAME#
+/// </summary>
+[InternalBufferCapacity(25)]
+[GenerateAuthoringComponent]
+public struct #SCRIPTNAME# : IBufferElementData
+{
+    // public int2 Value;
+}
