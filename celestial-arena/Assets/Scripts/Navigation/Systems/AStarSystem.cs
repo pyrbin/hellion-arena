@@ -1,13 +1,10 @@
 ﻿using System.Runtime.CompilerServices;
-using Unity.Burst;
 using Unity.Collections;
 using Unity.Entities;
 using Unity.Jobs;
 using Unity.Mathematics;
 using Unity.Physics;
 using Unity.Transforms;
-using UnityEngine;
-using UnityEngine.AI;
 
 // AStarSystem
 // TODO: Add more advanced Pathfinding, avoidance, agent size/height, 3D navigation

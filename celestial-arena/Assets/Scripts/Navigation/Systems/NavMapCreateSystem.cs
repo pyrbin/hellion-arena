@@ -78,7 +78,7 @@ public unsafe class NavMapCreateSystem : JobComponentSystem
         };
 
         Unity.Physics.RigidBody rigidbodyBox = Unity.Physics.RigidBody.Zero;
-        rigidbodyBox.Collider = (Unity.Physics.Collider*)Unity.Physics.BoxCollider.Create(geometry).GetUnsafePtr();
+        rigidbodyBox.Collider = Unity.Physics.BoxCollider.Create(geometry);
         return rigidbodyBox.CalculateAabb();
     }
 }

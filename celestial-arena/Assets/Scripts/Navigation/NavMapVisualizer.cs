@@ -6,7 +6,6 @@ using Unity.Mathematics;
 using Unity.NetCode;
 using UnityEngine;
 
-[ExecuteInEditMode]
 public class NavMapVisualizer : MonoBehaviour
 {
     public bool Enable = true;

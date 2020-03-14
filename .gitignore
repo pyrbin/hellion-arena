@@ -1,4 +1,9 @@
-# Editor
+# Build
+build/
+out/
+bin/
+dist/
 
+# Editor
 .vscode/
 .vs/

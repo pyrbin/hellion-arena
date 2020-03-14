@@ -13,7 +13,7 @@ using UnityEditor;
 using Unity.NetCode.Editor;
 
 #endif
-
+/*
 public class GameBootStrap : ClientServerBootstrap
 {
     public static World DefaultWorld => World.DefaultGameObjectInjectionWorld;
@@ -29,3 +29,4 @@ public class GameBootStrap : ClientServerBootstrap
         return true;
     }
 }
+*/
