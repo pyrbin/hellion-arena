@@ -9,7 +9,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 479146632244519165}
-  - component: {fileID: 479146632244519164}
+  - component: {fileID: 1401373232}
   m_Layer: 0
   m_Name: Navigation Visualizer
   m_TagString: Untagged
@@ -31,7 +31,7 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &479146632244519164
+--- !u!114 &1401373232
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -45,5 +45,5 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Enable: 1
   WireCubes: 1
-  NormalColor: {r: 0.5849056, g: 0.5849056, b: 0.5849056, a: 0.31764707}
+  NormalColor: {r: 0.5188679, g: 0.5188679, b: 0.5188679, a: 0.77254903}
   UnwalkableColor: {r: 1, g: 0, b: 0, a: 1}

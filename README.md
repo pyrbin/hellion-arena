@@ -1,8 +1,8 @@
 <a href="#"><img id="#logo" align="left" src="https://via.placeholder.com/100" width="150" height="150" style="margin-right: 15px;"></a>
 
-## Celestial Arena (wip name)
+## Hellion Arena (wip name)
 
-**Celestial Arena** is a **turn-based multiplayer game** based on the Arena mode of **Divinity: Original Sin 2** made in **Unity DOTS**.
+**Hellion Arena** is a **multiplayer turn-based arena game** based on the Arena mode of **Divinity: Original Sin 2** made in **Unity DOTS**.
 
 <br>
 

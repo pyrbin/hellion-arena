@@ -47,16 +47,6 @@ public class TurnInputSystem : JobComponentSystem
         {
             // EntityManager.RemoveComponent<Waypoint>(entity);
             EntityManager.AddComponentData(entity, new PathRequest { To = destination });
-
-            var input = default(MoveInput);
-            input.tick = World.GetExistingSystem<ClientSimulationSystemGroup>().ServerTick;
-            input.x = destination.x;
-            input.y = destination.y;
-            input.z = destination.z;
-            var localInput = GetSingleton<CommandTargetComponent>().targetEntity;
-            var inputBuffer = EntityManager.GetBuffer<MoveInput>(localInput);
-            inputBuffer.AddCommandData(input);
-            didAction = true;
         }
 
         if (didAction)

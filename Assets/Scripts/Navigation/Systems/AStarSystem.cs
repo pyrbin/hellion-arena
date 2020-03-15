@@ -41,13 +41,13 @@ public unsafe class AStarSystem : JobComponentSystem
         inputDeps = Entities
             .WithNone<Waypoint>()
             .WithNativeDisableUnsafePtrRestriction(ptr)
-            .ForEach((Entity entity, int entityInQueryIndex, ref MoveInput req, ref Translation translation) =>
+            .ForEach((Entity entity, int entityInQueryIndex, ref PathRequest req, ref Translation translation) =>
             {
                 // Consume path request component
                 cmdBuffer.RemoveComponent<PathRequest>(entityInQueryIndex, entity);
 
                 // Currently only uses X & Z coordinates (no Y-axis movement)
-                int endIdx = NavMap.GetIndex(new float3(req.x, translation.Value.y, req.z), nodeSize, mapSize);
+                int endIdx = NavMap.GetIndex(PositionUtil.ZeroY(req.To, translation.Value.y), nodeSize, mapSize);
                 int startIdx = NavMap.GetIndex(translation.Value, nodeSize, mapSize);
 
                 // If destination node is invalid skip AStar search.
@@ -136,7 +136,7 @@ public unsafe class AStarSystem : JobComponentSystem
 
                         // Use exact requested position for end node
                         // TODO: this may not be a good idea
-                        var worldPos = cursor == endIdx ? new float3(req.x, req.y, req.z) : transform.GetWorldPos(NavMap.ToCenterPos(coord, nodeSize));
+                        var worldPos = cursor == endIdx ? req.To : transform.GetWorldPos(NavMap.ToCenterPos(coord, nodeSize));
 
                         var pathPoint = new float3(worldPos.x, translation.Value.y, worldPos.z);
 

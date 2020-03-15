@@ -5,8 +5,8 @@ using Unity.NetCode;
 
 public static class PositionUtil
 {
-    public static float3 ZeroY(float3 coord)
+    public static float3 ZeroY(float3 coord, float y = 0)
     {
-        return new float3(coord.x, 0, coord.z);
+        return new float3(coord.x, y, coord.z);
     }
 }
