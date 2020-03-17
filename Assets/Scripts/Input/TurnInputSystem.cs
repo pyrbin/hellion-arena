@@ -15,46 +15,50 @@ using RaycastHit = Unity.Physics.RaycastHit;
 // done thus turn can be ended. Probly should be designed around the turn point system, eg a player
 // has a certain amount of points per turn when all have been spended wait for all actions to
 // complete then end turn.
-[AlwaysSynchronizeSystem]
-[UpdateInWorld(UpdateInWorld.TargetWorld.Client)]
-[RequireComponent(typeof(Translation))]
-public class TurnInputSystem : JobComponentSystem
+[UpdateInGroup(typeof(ClientSimulationSystemGroup))]
+public class TurnInputSystem : ComponentSystem
 {
     protected override void OnCreate()
     {
-        RequireSingletonForUpdate<TurnActor>();
+        RequireSingletonForUpdate<NetworkIdComponent>();
+        RequireSingletonForUpdate<EnableHellionGhostReceiveSystemComponent>();
         RequireSingletonForUpdate<NavMap>();
     }
 
     private const float RAYCAST_DISTANCE = 120f;
 
-    protected override JobHandle OnUpdate(JobHandle inputDeps)
+    protected override void OnUpdate()
     {
-        var didAction = false;
+        var entity = GetSingleton<CommandTargetComponent>().targetEntity;
 
-        var entity = GetSingletonEntity<TurnActor>();
+        // Setup
+        if (entity == Entity.Null)
+        {
+            var localPlayerId = GetSingleton<NetworkIdComponent>().Value;
+            Entities.WithNone<MoveToCommand>().ForEach((Entity entt, ref Actor actor) =>
+            {
+                if (actor.PlayerId != localPlayerId) return;
+                PostUpdateCommands.AddBuffer<MoveToCommand>(entt);
+                PostUpdateCommands.SetComponent(GetSingletonEntity<CommandTargetComponent>(), new CommandTargetComponent { targetEntity = entt });
+            });
+            return;
+        }
+
         var translation = EntityManager.GetComponentData<Translation>(entity);
-
         var hit = MouseRaycast(RAYCAST_DISTANCE, out var destination);
 
+#if UNITY_EDITOR
         var indicatorColor = Input.GetMouseButton(0) ? Color.green : Color.white;
         var indicatorSize = Input.GetMouseButton(0) ? .22f : .33f;
-
         DebugExtension.DebugCircle(destination, indicatorColor, indicatorSize);
-        DebugExtension.DebugCircle(PositionUtil.ZeroY(translation.Value), Color.green, 0.66f);
-
-        if (Input.GetMouseButtonDown(0) && hit)
-        {
-            // EntityManager.RemoveComponent<Waypoint>(entity);
-            EntityManager.AddComponentData(entity, new PathRequest { To = destination });
-        }
-
-        if (didAction)
-        {
-            TurnUtil.EndTurn(EntityManager);
-        }
-
-        return default;
+        DebugExtension.DebugCircle(PositionUtil.SetY(translation.Value), Color.green, 0.66f);
+#endif
+        var moveTo = Input.GetMouseButtonDown(0) && hit;
+        Log.Print("{0}", moveTo);
+        var cmd = new MoveToCommand { To = PositionUtil.SetY(destination, translation.Value.y), Move = moveTo };
+        cmd.tick = World.GetExistingSystem<ClientSimulationSystemGroup>().ServerTick;
+        var cmdBuffer = EntityManager.GetBuffer<MoveToCommand>(entity);
+        cmdBuffer.AddCommandData(cmd);
     }
 
     // Raycast from mouse position to world

@@ -17,7 +17,7 @@ GameObject:
   - component: {fileID: 5553253782328380078}
   - component: {fileID: 2270641533064789308}
   m_Layer: 0
-  m_Name: Player Actor
+  m_Name: Actor
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -31,7 +31,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 8406402287297788097}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: 3, y: 0.5, z: 3}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
@@ -64,7 +64,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 10303, guid: 0000000000000000f000000000000000, type: 0}
+  - {fileID: 2100000, guid: 34aac265eca82bb4299d7c7899ec02af, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -95,7 +95,7 @@ BoxCollider:
   m_GameObject: {fileID: 8406402287297788097}
   m_Material: {fileID: 0}
   m_IsTrigger: 0
-  m_Enabled: 1
+  m_Enabled: 0
   serializedVersion: 2
   m_Size: {x: 1, y: 1, z: 1}
   m_Center: {x: 0, y: 0, z: 0}
@@ -111,7 +111,7 @@ Rigidbody:
   m_Drag: 0
   m_AngularDrag: 0.05
   m_UseGravity: 1
-  m_IsKinematic: 0
+  m_IsKinematic: 1
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 0
@@ -140,6 +140,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 24e7de1d76335404aa0f0fd86a59e9e5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  Speed: 5
 --- !u!114 &2270641533064789308
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -155,9 +156,9 @@ MonoBehaviour:
   prefabId: c55ecf59d25703742aea3b55d0665641
   DefaultClientInstantiationType: 2
   RootPath: Scripts/Networking/Generated
-  SnapshotDataPath: PlayerActorSnapshotData.cs
-  UpdateSystemPath: PlayerActorGhostUpdateSystem.cs
-  SerializerPath: PlayerActorGhostSerializer.cs
+  SnapshotDataPath: ActorSnapshotData.cs
+  UpdateSystemPath: ActorGhostUpdateSystem.cs
+  SerializerPath: ActorGhostSerializer.cs
   Importance: 1
   PredictingPlayerNetworkId: Actor.PlayerId
   Components:
@@ -181,6 +182,30 @@ MonoBehaviour:
     manualFieldList: 0
     entityIndex: 0
   - name: Unity.Physics.PhysicsCollider
+    interpolatedClient: 1
+    predictedClient: 1
+    server: 1
+    sendDataTo: 0
+    fields: []
+    manualFieldList: 0
+    entityIndex: 0
+  - name: Unity.Physics.PhysicsDamping
+    interpolatedClient: 1
+    predictedClient: 1
+    server: 1
+    sendDataTo: 0
+    fields: []
+    manualFieldList: 0
+    entityIndex: 0
+  - name: Unity.Physics.PhysicsMass
+    interpolatedClient: 1
+    predictedClient: 1
+    server: 1
+    sendDataTo: 0
+    fields: []
+    manualFieldList: 0
+    entityIndex: 0
+  - name: Unity.Physics.PhysicsVelocity
     interpolatedClient: 1
     predictedClient: 1
     server: 1

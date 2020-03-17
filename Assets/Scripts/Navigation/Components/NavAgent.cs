@@ -2,7 +2,10 @@
 using Unity.Mathematics;
 
 [GenerateAuthoringComponent]
-public struct NavAgent : IComponentData { }
+public struct NavAgent : IComponentData
+{
+    public float Speed;
+}
 
 public struct PathRequest : IComponentData
 {

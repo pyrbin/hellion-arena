@@ -30,7 +30,7 @@ public class Game : ComponentSystem
             {
                 // Client worlds automatically connect to localhost
                 NetworkEndPoint ep = NetworkEndPoint.LoopbackIpv4;
-                ep.Port = 7979;
+                ep.Port = 8787;
                 network.Connect(ep);
             }
 #if UNITY_EDITOR
@@ -39,14 +39,14 @@ public class Game : ComponentSystem
             {
                 // Server world automatically listens for connections from any host
                 NetworkEndPoint ep = NetworkEndPoint.AnyIpv4;
-                ep.Port = 7979;
+                ep.Port = 8787;
                 network.Listen(ep);
             }
 #endif
         }
     }
 }
-/*
+
 [BurstCompile]
 public struct GoInGameRequest : IRpcCommand
 {
@@ -89,17 +89,12 @@ public class GoInGameClientSystem : ComponentSystem
 
     protected override void OnUpdate()
     {
-        Entities.WithNone<NetworkStreamInGame>().ForEach((Entity ent, ref NetworkIdComponent id) =>
+        Entities.WithNone<NetworkStreamInGame>().ForEach((Entity player, ref NetworkIdComponent id) =>
         {
-            PostUpdateCommands.AddComponent<NetworkStreamInGame>(ent);
+            PostUpdateCommands.AddComponent<NetworkStreamInGame>(player);
             var req = PostUpdateCommands.CreateEntity();
             PostUpdateCommands.AddComponent<GoInGameRequest>(req);
-            PostUpdateCommands.AddComponent(req, new SendRpcCommandRequestComponent { TargetConnection = ent });
-       
-            var r = PostUpdateCommands.CreateEntity();
-            PostUpdateCommands.AddComponent<FireBulletRequest>(r);
-            PostUpdateCommands.AddComponent(r, new SendRpcCommandRequestComponent { TargetConnection = ent });
-       
+            PostUpdateCommands.AddComponent(req, new SendRpcCommandRequestComponent { TargetConnection = player });
         });
     }
 }
@@ -118,19 +113,20 @@ public class GoInGameServerSystem : ComponentSystem
         Entities.WithNone<SendRpcCommandRequestComponent>().ForEach((Entity reqEnt, ref GoInGameRequest req, ref ReceiveRpcCommandRequestComponent reqSrc) =>
         {
             PostUpdateCommands.AddComponent<NetworkStreamInGame>(reqSrc.SourceConnection);
-            UnityEngine.Debug.Log(String.Format("Server setting connection {0} to in game", EntityManager.GetComponentData<NetworkIdComponent>(reqSrc.SourceConnection).Value));
+
+            Log.Print("Server setting connection {0} to in game", EntityManager.GetComponentData<NetworkIdComponent>(reqSrc.SourceConnection).Value);
 
             var ghostCollection = GetSingleton<GhostPrefabCollectionComponent>();
             var ghostId = HellionGhostSerializerCollection.FindGhostType<ActorSnapshotData>();
+
             var prefab = EntityManager.GetBuffer<GhostPrefabBuffer>(ghostCollection.serverPrefabs)[ghostId].Value;
             var player = EntityManager.Instantiate(prefab);
 
             EntityManager.SetComponentData(player, new Actor { PlayerId = EntityManager.GetComponentData<NetworkIdComponent>(reqSrc.SourceConnection).Value });
+            PostUpdateCommands.AddBuffer<MoveToCommand>(player);
 
             PostUpdateCommands.SetComponent(reqSrc.SourceConnection, new CommandTargetComponent { targetEntity = player });
             PostUpdateCommands.DestroyEntity(reqEnt);
-
-            // PostUpdateCommands.AddBuffer<CubeInput>(player);
         });
     }
-}*/
+}

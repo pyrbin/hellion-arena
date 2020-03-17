@@ -12,7 +12,6 @@ public class TurnBeginSystem : JobComponentSystem
     public struct TriggerComponent : IComponentData { }
 
     private EntityQuery TurnTakers;
-    private EntityQuery TurnTakerActions;
 
     protected override void OnCreate()
     {
@@ -31,7 +30,7 @@ public class TurnBeginSystem : JobComponentSystem
     protected override JobHandle OnUpdate(JobHandle inputDeps)
     {
         // Don't start any new turns until current turns are complete
-        if (!TurnTakers.IsEmptyIgnoreFilter)
+        if (!TurnTakers.IsEmptyIgnoreFilter || !TurnUtil.AnyInQueue(this))
             return default;
 
         // Start turn first actor in queue

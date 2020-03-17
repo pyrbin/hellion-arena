@@ -33,6 +33,6 @@ public class TurnInitSystem : ComponentSystem
                 queue.Add(new TurnQueue { Entity = entity });
             });
 
-        TurnUtil.NextTurn(EntityManager);
+        // TurnUtil.NextTurn(EntityManager);
     }
 }

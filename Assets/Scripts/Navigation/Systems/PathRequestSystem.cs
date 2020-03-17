@@ -3,13 +3,14 @@ using Unity.Collections;
 using Unity.Entities;
 using Unity.Jobs;
 using Unity.Mathematics;
+using Unity.NetCode;
 using Unity.Physics;
 using Unity.Transforms;
 
 // AStarSystem
 // TODO: Add more advanced Pathfinding, avoidance, agent size/height, 3D navigation
-[UpdateInGroup(typeof(SimulationSystemGroup))]
-public unsafe class AStarSystem : JobComponentSystem
+[UpdateInGroup(typeof(GhostPredictionSystemGroup))]
+public unsafe class PathRequestSystem : JobComponentSystem
 {
     private EndSimulationEntityCommandBufferSystem cmdBufferSystem;
     private NativeArray<Neighbour> neighbours;
@@ -37,17 +38,24 @@ public unsafe class AStarSystem : JobComponentSystem
         var ptr = navMap.NodesPtr;
         var neighbourRef = neighbours;
 
+        // netcode data
+        var group = World.GetExistingSystem<GhostPredictionSystemGroup>();
+        var tick = group.PredictingTick;
+
         // Execute job
         inputDeps = Entities
-            .WithNone<Waypoint>()
             .WithNativeDisableUnsafePtrRestriction(ptr)
-            .ForEach((Entity entity, int entityInQueryIndex, ref PathRequest req, ref Translation translation) =>
+            .ForEach((Entity entity, int entityInQueryIndex, DynamicBuffer<MoveToCommand> reqBuffer, ref Translation translation, ref PredictedGhostComponent prediction) =>
             {
+                if (!GhostPredictionSystemGroup.ShouldPredict(tick, prediction))
+                    return;
                 // Consume path request component
-                cmdBuffer.RemoveComponent<PathRequest>(entityInQueryIndex, entity);
+                reqBuffer.GetDataAtTick(tick, out var req);
+                //cmdBuffer.RemoveComponent<PathRequest>(entityInQueryIndex, entity);
+                if (!req.Move) return;
 
                 // Currently only uses X & Z coordinates (no Y-axis movement)
-                int endIdx = NavMap.GetIndex(PositionUtil.ZeroY(req.To, translation.Value.y), nodeSize, mapSize);
+                int endIdx = NavMap.GetIndex(PositionUtil.SetY(req.To, translation.Value.y), nodeSize, mapSize);
                 int startIdx = NavMap.GetIndex(translation.Value, nodeSize, mapSize);
 
                 // If destination node is invalid skip AStar search.

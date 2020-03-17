@@ -1,14 +1,15 @@
 ﻿using Unity.Entities;
 using Unity.Jobs;
 using Unity.Mathematics;
+using Unity.NetCode;
 using Unity.Physics;
 using Unity.Transforms;
 using UnityEngine;
 
 [UpdateInGroup(typeof(SimulationSystemGroup))]
-public class MoveWaypointSystem : JobComponentSystem
+public class WaypointSystem : JobComponentSystem
 {
-    private readonly static bool REQUEST_BUILD_MAP_ON_MOVE = true;
+    private readonly static bool REQUEST_BUILD_MAP_ON_MOVE = false;
     private EndSimulationEntityCommandBufferSystem cmdBufferSystem;
 
     protected override void OnCreate()
@@ -23,8 +24,7 @@ public class MoveWaypointSystem : JobComponentSystem
         var cmdBuffer = cmdBufferSystem.CreateCommandBuffer().ToConcurrent();
 
         inputDeps = Entities
-            .WithBurst()
-            .ForEach((Entity e, int entityInQueryIndex, ref DynamicBuffer<Waypoint> waypoints, ref Translation translation, ref Rotation rotation) =>
+            .ForEach((Entity e, int entityInQueryIndex, ref DynamicBuffer<Waypoint> waypoints, ref Translation translation, ref Rotation rotation, ref NavAgent agent) =>
             {
                 if (waypoints.Length < 1)
                 {
@@ -33,17 +33,18 @@ public class MoveWaypointSystem : JobComponentSystem
                     if (REQUEST_BUILD_MAP_ON_MOVE)
                         cmdBuffer.AddComponent<NavMapBuild>(entityInQueryIndex, e);
                     return;
-                };
+                }
 
+#if UNITY_EDITOR
                 // Draw lines
                 for (int i = waypoints.Length - 1; i >= 0; i--)
                 {
                     var src = i == waypoints.Length - 1 ? translation.Value : waypoints[i + 1].Value;
                     Debug.DrawLine(src, waypoints[i].Value, Color.green);
                 }
-
+#endif
                 var wp = waypoints[waypoints.Length - 1];
-                var stepSize = 5f * dt;
+                var stepSize = agent.Speed * dt;
                 var direction = wp.Value - translation.Value;
 
                 if (math.length(direction.xz) > 0.1f)
