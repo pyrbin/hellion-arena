@@ -3,11 +3,10 @@ using Unity.Entities;
 using Unity.Mathematics;
 using UnityEngine;
 
-// ReSharper disable once InconsistentNaming
 [RequiresEntityConversion]
 [UpdateInGroup(typeof(SimulationSystemGroup))]
 [AddComponentMenu("Navigation/Navigation Map")]
-public class NavMapAuthoring : MonoBehaviour, IConvertGameObjectToEntity
+public class NavigationMapAuthoring : MonoBehaviour, IConvertGameObjectToEntity
 {
     [Header("Map Settings")]
     [Comment("Navigation Map only works in positive coordinate space!", CommentType.Warning)]
@@ -17,7 +16,7 @@ public class NavMapAuthoring : MonoBehaviour, IConvertGameObjectToEntity
 
     public void Convert(Entity entity, EntityManager dstManager, GameObjectConversionSystem conversionSystem)
     {
-        dstManager.AddComponentData(entity, new NavMapCreate
+        dstManager.AddComponentData(entity, new CreateNavigationMap
         {
             Size = Size,
             NodeSize = NodeSize,

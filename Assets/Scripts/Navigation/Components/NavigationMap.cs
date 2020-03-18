@@ -4,7 +4,7 @@ using Unity.Entities;
 using Unity.Mathematics;
 using Unity.Physics;
 
-public struct NavMapCreate : IComponentData
+public struct CreateNavigationMap : IComponentData
 {
     public int3 Size;
     public float NodeSize;
@@ -12,16 +12,16 @@ public struct NavMapCreate : IComponentData
     public transform3d Transform;
 }
 
-public struct NavMapBuild : IComponentData { }
+public struct BuildNavigationMap : IComponentData { }
 
-public struct NavMap : IComponentData
+public struct NavigationMap : IComponentData
 {
-    public BlobAssetReference<NavMapBlob> Blob;
+    public BlobAssetReference<NavigationMapBlob> Blob;
     public int Count => NodeCount(Size);
     public int3 Size => Blob.Value.Size;
     public float NodeSize => Blob.Value.NodeSize;
-    public ref BlobArray<NavMapNode> Nodes => ref Blob.Value.Nodes;
-    public unsafe NavMapNode* NodesPtr => (NavMapNode*)Blob.Value.Nodes.GetUnsafePtr();
+    public ref BlobArray<NavigationMapNode> Nodes => ref Blob.Value.Nodes;
+    public unsafe NavigationMapNode* NodesPtr => (NavigationMapNode*)Blob.Value.Nodes.GetUnsafePtr();
 
     public transform3d Transform => Blob.Value.Transform;
 
@@ -65,15 +65,15 @@ public struct NavMap : IComponentData
         => size.x * size.y * size.z;
 }
 
-public struct NavMapBlob
+public struct NavigationMapBlob
 {
     public int3 Size;
     public float NodeSize;
     public transform3d Transform;
-    public BlobArray<NavMapNode> Nodes;
+    public BlobArray<NavigationMapNode> Nodes;
 }
 
-public struct NavMapNode
+public struct NavigationMapNode
 {
     public int3 Coord;
     public bool Walkable;

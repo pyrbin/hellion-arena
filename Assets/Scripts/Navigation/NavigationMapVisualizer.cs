@@ -6,7 +6,7 @@ using Unity.Mathematics;
 using Unity.NetCode;
 using UnityEngine;
 
-public class NavMapVisualizer : MonoBehaviour
+public class NavigationMapVisualizer : MonoBehaviour
 {
     public bool Enable = true;
     public bool WireCubes = false;
@@ -14,7 +14,7 @@ public class NavMapVisualizer : MonoBehaviour
     public Color NormalColor;
     public Color UnwalkableColor;
 
-    public bool HasSpawned(out NavMap? navmap)
+    public bool HasSpawned(out NavigationMap? navmap)
     {
         navmap = null;
         var world = WorldUtil.ClientWorld;
@@ -23,9 +23,9 @@ public class NavMapVisualizer : MonoBehaviour
 
         var em = world.EntityManager;
 
-        var q = em.CreateEntityQuery(typeof(NavMap));
+        var q = em.CreateEntityQuery(typeof(NavigationMap));
         if (q.CalculateEntityCount() <= 0) return false;
-        navmap = q.GetSingleton<NavMap>();
+        navmap = q.GetSingleton<NavigationMap>();
         return true;
     }
 
@@ -33,18 +33,18 @@ public class NavMapVisualizer : MonoBehaviour
     {
         if (!Enable) return;
 
-        NavMap? fetch;
+        NavigationMap? fetch;
 
         if (!HasSpawned(out fetch)) return;
 
-        var navmap = (NavMap)fetch;
+        var navmap = (NavigationMap)fetch;
 
         foreach (var node in navmap.Nodes.ToArray())
         {
             Gizmos.matrix = navmap.Transform.ToWorldMatrix;
             Gizmos.color = node.Walkable ? NormalColor : UnwalkableColor;
 
-            var centerPos = navmap.Transform.GetWorldPos(NavMap.ToCenterPos(node.Coord, navmap.NodeSize));
+            var centerPos = navmap.Transform.GetWorldPos(NavigationMap.ToCenterPos(node.Coord, navmap.NodeSize));
 
             if (WireCubes) Gizmos.DrawWireCube(centerPos, new float3(navmap.NodeSize, 0, navmap.NodeSize));
             else Gizmos.DrawCube(centerPos, new float3(navmap.NodeSize, 0, navmap.NodeSize));

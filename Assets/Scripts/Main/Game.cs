@@ -82,51 +82,35 @@ public class GoInGameRequestSystem : RpcCommandRequestSystem<GoInGameRequest> { 
 [UpdateInGroup(typeof(ClientSimulationSystemGroup))]
 public class GoInGameClientSystem : ComponentSystem
 {
-    protected override void OnCreate()
-    {
-        RequireSingletonForUpdate<EnableHellionGhostReceiveSystemComponent>();
-    }
-
-    protected override void OnUpdate()
-    {
-        Entities.WithNone<NetworkStreamInGame>().ForEach((Entity player, ref NetworkIdComponent id) =>
+    protected override void OnUpdate() => Entities
+        .WithAll<NetworkIdComponent>()
+        .WithNone<NetworkStreamInGame>()
+        .ForEach((Entity ent) =>
         {
-            PostUpdateCommands.AddComponent<NetworkStreamInGame>(player);
+            PostUpdateCommands.AddComponent<NetworkStreamInGame>(ent);
             var req = PostUpdateCommands.CreateEntity();
             PostUpdateCommands.AddComponent<GoInGameRequest>(req);
-            PostUpdateCommands.AddComponent(req, new SendRpcCommandRequestComponent { TargetConnection = player });
+            PostUpdateCommands.AddComponent(req, new SendRpcCommandRequestComponent { TargetConnection = ent });
         });
-    }
 }
 
 // When server receives go in game request, go in game and delete request
 [UpdateInGroup(typeof(ServerSimulationSystemGroup))]
 public class GoInGameServerSystem : ComponentSystem
 {
-    protected override void OnCreate()
-    {
-        RequireSingletonForUpdate<EnableHellionGhostSendSystemComponent>();
-    }
-
-    protected override void OnUpdate()
-    {
-        Entities.WithNone<SendRpcCommandRequestComponent>().ForEach((Entity reqEnt, ref GoInGameRequest req, ref ReceiveRpcCommandRequestComponent reqSrc) =>
+    protected override void OnUpdate() => Entities
+        .WithNone<SendRpcCommandRequestComponent>()
+        .ForEach((Entity reqEnt, ref GoInGameRequest req, ref ReceiveRpcCommandRequestComponent reqSrc) =>
         {
             PostUpdateCommands.AddComponent<NetworkStreamInGame>(reqSrc.SourceConnection);
-
-            Log.Print("Server setting connection {0} to in game", EntityManager.GetComponentData<NetworkIdComponent>(reqSrc.SourceConnection).Value);
-
+            UnityEngine.Debug.Log(String.Format("Server setting connection {0} to in game", EntityManager.GetComponentData<NetworkIdComponent>(reqSrc.SourceConnection).Value));
             var ghostCollection = GetSingleton<GhostPrefabCollectionComponent>();
             var ghostId = HellionGhostSerializerCollection.FindGhostType<ActorSnapshotData>();
-
             var prefab = EntityManager.GetBuffer<GhostPrefabBuffer>(ghostCollection.serverPrefabs)[ghostId].Value;
             var player = EntityManager.Instantiate(prefab);
-
             EntityManager.SetComponentData(player, new Actor { PlayerId = EntityManager.GetComponentData<NetworkIdComponent>(reqSrc.SourceConnection).Value });
-            PostUpdateCommands.AddBuffer<MoveToCommand>(player);
-
+            PostUpdateCommands.AddBuffer<UserCmd>(player);
             PostUpdateCommands.SetComponent(reqSrc.SourceConnection, new CommandTargetComponent { targetEntity = player });
             PostUpdateCommands.DestroyEntity(reqEnt);
         });
-    }
 }

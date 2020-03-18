@@ -2,7 +2,7 @@
 using Unity.Mathematics;
 
 [GenerateAuthoringComponent]
-public struct NavAgent : IComponentData
+public struct NavigationAgent : IComponentData
 {
     public float Speed;
 }

@@ -8,9 +8,8 @@ using Unity.Transforms;
 public struct ActorGhostSerializer : IGhostSerializer<ActorSnapshotData>
 {
     private ComponentType componentTypeActor;
-    private ComponentType componentTypeNavAgent;
-    private ComponentType componentTypePhysicsCollider;
-    private ComponentType componentTypePhysicsDamping;
+    private ComponentType componentTypeNavigationAgent;
+    private ComponentType componentTypePhysicsGravityFactor;
     private ComponentType componentTypePhysicsMass;
     private ComponentType componentTypePhysicsVelocity;
     private ComponentType componentTypeLocalToWorld;
@@ -31,9 +30,8 @@ public struct ActorGhostSerializer : IGhostSerializer<ActorSnapshotData>
     public void BeginSerialize(ComponentSystemBase system)
     {
         componentTypeActor = ComponentType.ReadWrite<Actor>();
-        componentTypeNavAgent = ComponentType.ReadWrite<NavAgent>();
-        componentTypePhysicsCollider = ComponentType.ReadWrite<PhysicsCollider>();
-        componentTypePhysicsDamping = ComponentType.ReadWrite<PhysicsDamping>();
+        componentTypeNavigationAgent = ComponentType.ReadWrite<NavigationAgent>();
+        componentTypePhysicsGravityFactor = ComponentType.ReadWrite<PhysicsGravityFactor>();
         componentTypePhysicsMass = ComponentType.ReadWrite<PhysicsMass>();
         componentTypePhysicsVelocity = ComponentType.ReadWrite<PhysicsVelocity>();
         componentTypeLocalToWorld = ComponentType.ReadWrite<LocalToWorld>();

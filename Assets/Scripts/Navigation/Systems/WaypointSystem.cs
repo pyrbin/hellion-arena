@@ -14,7 +14,7 @@ public class WaypointSystem : JobComponentSystem
 
     protected override void OnCreate()
     {
-        RequireSingletonForUpdate<NavMap>();
+        RequireSingletonForUpdate<NavigationMap>();
         cmdBufferSystem = World.GetExistingSystem<EndSimulationEntityCommandBufferSystem>();
     }
 
@@ -24,14 +24,14 @@ public class WaypointSystem : JobComponentSystem
         var cmdBuffer = cmdBufferSystem.CreateCommandBuffer().ToConcurrent();
 
         inputDeps = Entities
-            .ForEach((Entity e, int entityInQueryIndex, ref DynamicBuffer<Waypoint> waypoints, ref Translation translation, ref Rotation rotation, ref NavAgent agent) =>
+            .ForEach((Entity e, int entityInQueryIndex, ref DynamicBuffer<Waypoint> waypoints, ref Translation translation, ref Rotation rotation, ref NavigationAgent agent) =>
             {
                 if (waypoints.Length < 1)
                 {
                     cmdBuffer.RemoveComponent<Waypoint>(entityInQueryIndex, e);
                     // TODO: Maybe not request build on every move
                     if (REQUEST_BUILD_MAP_ON_MOVE)
-                        cmdBuffer.AddComponent<NavMapBuild>(entityInQueryIndex, e);
+                        cmdBuffer.AddComponent<BuildNavigationMap>(entityInQueryIndex, e);
                     return;
                 }
 

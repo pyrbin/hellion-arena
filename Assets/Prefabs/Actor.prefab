@@ -14,7 +14,7 @@ GameObject:
   - component: {fileID: 446137648872422909}
   - component: {fileID: 813934616909490112}
   - component: {fileID: 1207407821782433499}
-  - component: {fileID: 5553253782328380078}
+  - component: {fileID: 5895881538317436075}
   - component: {fileID: 2270641533064789308}
   m_Layer: 0
   m_Name: Actor
@@ -128,7 +128,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   PlayerId: 0
---- !u!114 &5553253782328380078
+--- !u!114 &5895881538317436075
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -155,7 +155,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   prefabId: c55ecf59d25703742aea3b55d0665641
   DefaultClientInstantiationType: 2
-  RootPath: Scripts/Networking/Generated
+  RootPath: ../Scripts/Networking/Generated
   SnapshotDataPath: ActorSnapshotData.cs
   UpdateSystemPath: ActorGhostUpdateSystem.cs
   SerializerPath: ActorGhostSerializer.cs
@@ -173,7 +173,7 @@ MonoBehaviour:
       interpolate: 0
     manualFieldList: 0
     entityIndex: 0
-  - name: NavAgent
+  - name: NavigationAgent
     interpolatedClient: 1
     predictedClient: 1
     server: 1
@@ -181,15 +181,7 @@ MonoBehaviour:
     fields: []
     manualFieldList: 0
     entityIndex: 0
-  - name: Unity.Physics.PhysicsCollider
-    interpolatedClient: 1
-    predictedClient: 1
-    server: 1
-    sendDataTo: 0
-    fields: []
-    manualFieldList: 0
-    entityIndex: 0
-  - name: Unity.Physics.PhysicsDamping
+  - name: Unity.Physics.PhysicsGravityFactor
     interpolatedClient: 1
     predictedClient: 1
     server: 1
