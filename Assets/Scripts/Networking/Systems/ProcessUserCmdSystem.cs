@@ -28,6 +28,7 @@ public class ProcessUserCmdSystem : ComponentSystem
                 // If UserCommand has MoveOrder
                 if (cmd.Actions.Has(UserCmd.Action.MoveOrder))
                 {
+                    EntityManager.RemoveComponent<Waypoint>(entity);
                     EntityManager.AddComponentData(entity, new MovementOrder.Request { To = cmd.moveOrderPos });
                 }
             });

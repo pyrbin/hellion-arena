@@ -241,26 +241,4 @@ public class ActorGhostUpdateSystem : JobComponentSystem
 }
 public partial class ActorGhostSpawnSystem : DefaultGhostSpawnSystem<ActorSnapshotData>
 {
-    struct SetPredictedDefault : IJobParallelFor
-    {
-        [ReadOnly] public NativeArray<ActorSnapshotData> snapshots;
-        public NativeArray<int> predictionMask;
-        [ReadOnly][DeallocateOnJobCompletion] public NativeArray<NetworkIdComponent> localPlayerId;
-        public void Execute(int index)
-        {
-            if (localPlayerId.Length == 1 && snapshots[index].GetActorPlayerId() == localPlayerId[0].Value)
-                predictionMask[index] = 1;
-        }
-    }
-    protected override JobHandle SetPredictedGhostDefaults(NativeArray<ActorSnapshotData> snapshots, NativeArray<int> predictionMask, JobHandle inputDeps)
-    {
-        JobHandle playerHandle;
-        var job = new SetPredictedDefault
-        {
-            snapshots = snapshots,
-            predictionMask = predictionMask,
-            localPlayerId = m_PlayerGroup.ToComponentDataArrayAsync<NetworkIdComponent>(Allocator.TempJob, out playerHandle),
-        };
-        return job.Schedule(predictionMask.Length, 8, JobHandle.CombineDependencies(playerHandle, inputDeps));
-    }
 }

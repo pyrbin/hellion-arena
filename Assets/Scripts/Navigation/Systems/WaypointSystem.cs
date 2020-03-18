@@ -39,8 +39,8 @@ public class WaypointSystem : JobComponentSystem
                 // Draw lines
                 for (int i = waypoints.Length - 1; i >= 0; i--)
                 {
-                    var src = i == waypoints.Length - 1 ? translation.Value : waypoints[i + 1].Value;
-                    Debug.DrawLine(src, waypoints[i].Value, Color.green);
+                    var src = i == waypoints.Length - 1 ? PositionUtil.SetY(translation.Value) : PositionUtil.SetY(waypoints[i + 1].Value);
+                    Debug.DrawLine(src, PositionUtil.SetY(waypoints[i].Value), Color.green);
                 }
 #endif
                 var wp = waypoints[waypoints.Length - 1];

@@ -154,7 +154,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   prefabId: c55ecf59d25703742aea3b55d0665641
-  DefaultClientInstantiationType: 2
+  DefaultClientInstantiationType: 0
   RootPath: ../Scripts/Networking/Generated
   SnapshotDataPath: ActorSnapshotData.cs
   UpdateSystemPath: ActorGhostUpdateSystem.cs
