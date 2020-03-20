@@ -103,8 +103,9 @@ public static class InputSystem
 #if UNITY_EDITOR
             var indicatorColor = Input.GetMouseButton(0) ? Color.green : Color.white;
             var indicatorSize = Input.GetMouseButton(0) ? .22f : .33f;
-            DebugExtension.DebugCircle(destination, indicatorColor, indicatorSize);
-            DebugExtension.DebugCircle(PositionUtil.SetY(position), Color.green, 0.66f);
+
+            DebugDraw.Sphere(destination, indicatorSize, indicatorColor);
+            DebugDraw.Sphere(PositionUtil.SetY(position), 0.66f, Color.green);
 #endif
             if (hit)
             {

@@ -44,7 +44,7 @@ public static class MoveOrder
 
             // Execute job
             inputDeps = Entities
-                .WithAll<NavAgent>()
+                .WithAll<Unit>()
                 .ForEach((Entity entity, int entityInQueryIndex, RequestComponent req) =>
                 {
                     // Consume request component

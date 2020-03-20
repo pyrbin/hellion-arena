@@ -4,6 +4,7 @@ using Unity.NetCode;
 using Unity.Networking.Transport;
 using Unity.Burst;
 using UnityEngine;
+using static ConfigFile;
 
 // Control system updating in the default world
 [UpdateInWorld(UpdateInWorld.TargetWorld.Default)]
@@ -30,10 +31,21 @@ public class GameClientServerControl : ComponentSystem
             // Client connection
             if (world.GetExistingSystem<ClientSimulationSystemGroup>() != null)
             {
-                // Client worlds automatically connect to localhost
-                NetworkEndPoint ep = NetworkEndPoint.LoopbackIpv4;
-                ep.Port = 8787;
-                network.Connect(ep);
+                var config = ServerConfig.Default;
+
+                if (!ConfigFile.Exists())
+                {
+                    ConfigFile.Save(config);
+                }
+                else
+                {
+                    ConfigFile.Load(out config);
+                }
+
+                Debug.Log(config.Ip + " " + config.Port);
+
+                // Client worlds automatically connect
+                network.Connect(config.EndPoint);
             }
 #endif
 
@@ -42,9 +54,7 @@ public class GameClientServerControl : ComponentSystem
             if (world.GetExistingSystem<ServerSimulationSystemGroup>() != null)
             {
                 // Server world automatically listens for connections from any host
-                NetworkEndPoint ep = NetworkEndPoint.AnyIpv4;
-                ep.Port = 8787;
-                network.Listen(ep);
+                network.Listen(ServerConfig.Default.EndPoint);
             }
 #endif
         }

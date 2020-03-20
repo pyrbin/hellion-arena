@@ -14,8 +14,8 @@ GameObject:
   - component: {fileID: 8971790768381994525}
   - component: {fileID: 8889470971005924566}
   - component: {fileID: 7269027915346493073}
+  - component: {fileID: 501707656609135962}
   - component: {fileID: 8971790768381994527}
-  - component: {fileID: 8971790768381994526}
   - component: {fileID: -2119052312458086196}
   m_Layer: 8
   m_Name: Unit
@@ -53,20 +53,12 @@ MonoBehaviour:
   prefabId: d292fd6ad5b3a5848977c4b7c5d419d6
   DefaultClientInstantiationType: 2
   RootPath: /Scripts/
-  SnapshotDataPath: Common/Generated/CapsuleSnapshotData.cs
-  UpdateSystemPath: Client/Generated/CapsuleGhostUpdateSystem.cs
-  SerializerPath: Server/Generated/CapsuleGhostSerializer.cs
+  SnapshotDataPath: Common/Generated/UnitSnapshotData.cs
+  UpdateSystemPath: Client/Generated/UnitGhostUpdateSystem.cs
+  SerializerPath: Server/Generated/UnitGhostSerializer.cs
   Importance: 1
   PredictingPlayerNetworkId: PlayerId.Value
   Components:
-  - name: NavAgent
-    interpolatedClient: 1
-    predictedClient: 1
-    server: 1
-    sendDataTo: 0
-    fields: []
-    manualFieldList: 0
-    entityIndex: 0
   - name: NavObstacle
     interpolatedClient: 1
     predictedClient: 1
@@ -84,6 +76,14 @@ MonoBehaviour:
     - name: Value
       quantization: -1
       interpolate: 0
+    manualFieldList: 0
+    entityIndex: 0
+  - name: Unit
+    interpolatedClient: 1
+    predictedClient: 1
+    server: 1
+    sendDataTo: 0
+    fields: []
     manualFieldList: 0
     entityIndex: 0
   - name: Unity.Physics.PhysicsCollider
@@ -251,6 +251,19 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 0
+--- !u!114 &501707656609135962
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8971790768381994592}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2d6a084800436b146881e6f9f8eecabe, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Movespeed: 5
 --- !u!114 &8971790768381994527
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -264,19 +277,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Value: 0
---- !u!114 &8971790768381994526
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8971790768381994592}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e9f9d252e1fc8414e99a950cb93310d5, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  Speed: 5
 --- !u!114 &-2119052312458086196
 MonoBehaviour:
   m_ObjectHideFlags: 0

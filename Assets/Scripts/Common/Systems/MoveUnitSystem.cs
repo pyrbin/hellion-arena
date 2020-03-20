@@ -16,7 +16,7 @@ public class MoveUnitSystem : ComponentSystem
 
         // Execute job
         Entities
-            .ForEach((DynamicBuffer<UserCmd> cmdBuffer, ref PredictedGhostComponent prediction, ref Translation translation, ref NavAgent agent) =>
+            .ForEach((DynamicBuffer<UserCmd> cmdBuffer, ref PredictedGhostComponent prediction, ref Translation translation, ref Unit unit) =>
             {
                 if (!GhostPredictionSystemGroup.ShouldPredict(Tick, prediction))
                     return;
@@ -26,7 +26,7 @@ public class MoveUnitSystem : ComponentSystem
                 // UserCmd.Action.MoveOrder
                 if (cmd.Actions.Has(UserCmd.Action.MoveOrder))
                 {
-                    var stepSize = agent.Speed * dt;
+                    var stepSize = unit.Movespeed * dt;
                     var direction = cmd.moveOrderTo - translation.Value;
 
                     if (math.length(direction.xz) > 0.1f)
