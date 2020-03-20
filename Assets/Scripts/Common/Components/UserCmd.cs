@@ -8,6 +8,7 @@ using UnityEngine.Networking;
 using Unity.NetCode;
 using Unity.Jobs;
 using Unity.Collections;
+using System.Linq;
 
 [Serializable]
 [GhostDefaultComponent(GhostDefaultComponentAttribute.Type.PredictedClient)]
@@ -20,6 +21,57 @@ public struct UserCmd : ICommandData<UserCmd>
         None = 0,
         MoveOrder = 1 << 1,
         OtherAction = 1 << 2,
+    }
+
+    public uint tick;
+    public BitField Actions;
+
+    // MoveOrder variables
+    public float3 moveOrderTo;
+
+    public static readonly UserCmd empty = new UserCmd(0);
+
+    private UserCmd(int _)
+    {
+        tick = 0;
+        Actions = new BitField { Flags = 0 };
+        moveOrderTo = float3.zero;
+    }
+
+    public void ClearCommand(uint tick = 0)
+    {
+        Actions.Flags = 0;
+        moveOrderTo = float3.zero;
+        this.tick = tick;
+    }
+
+    public void Serialize(ref DataStreamWriter writer)
+    {
+        writer.WriteUInt(Actions.Flags);
+
+        writer.WriteFloat(moveOrderTo.x);
+        writer.WriteFloat(moveOrderTo.y);
+        writer.WriteFloat(moveOrderTo.z);
+    }
+
+    public void Deserialize(uint tick, ref DataStreamReader reader)
+    {
+        this.tick = tick;
+        Actions.Flags = reader.ReadUInt();
+
+        moveOrderTo.x = reader.ReadFloat();
+        moveOrderTo.y = reader.ReadFloat();
+        moveOrderTo.z = reader.ReadFloat();
+    }
+
+    public void Serialize(ref DataStreamWriter writer, UserCmd baseline, NetworkCompressionModel compressionModel)
+    {
+        Serialize(ref writer);
+    }
+
+    public void Deserialize(uint tick, ref DataStreamReader reader, UserCmd baseline, NetworkCompressionModel compressionModel)
+    {
+        Deserialize(tick, ref reader);
     }
 
     public struct BitField
@@ -38,7 +90,7 @@ public struct UserCmd : ICommandData<UserCmd>
                 Flags |= (uint)button;
         }
 
-        public void Set(Action button, bool val)
+        public void Set(Action button, bool val = true)
         {
             if (val)
                 Flags |= (uint)button;
@@ -48,62 +100,22 @@ public struct UserCmd : ICommandData<UserCmd>
             }
         }
     }
-
-    public uint tick;
-    public BitField Actions;
-    public float3 moveOrderPos;
-
-    public static readonly UserCmd empty = new UserCmd(0);
-
-    // Structs cant have parameterless constructor?
-    private UserCmd(int i)
-    {
-        tick = 0;
-        Actions = new BitField { Flags = 0 };
-        moveOrderPos = float3.zero;
-    }
-
-    public void ClearCommand(uint tick = 0)
-    {
-        Actions.Flags = 0;
-        moveOrderPos = float3.zero;
-        this.tick = tick;
-    }
-
-    public void Serialize(ref DataStreamWriter writer)
-    {
-        writer.WriteUInt(Actions.Flags);
-        writer.WriteFloat(moveOrderPos.x);
-        writer.WriteFloat(moveOrderPos.y);
-        writer.WriteFloat(moveOrderPos.z);
-    }
-
-    public void Deserialize(uint tick, ref DataStreamReader reader)
-    {
-        this.tick = tick;
-        Actions.Flags = reader.ReadUInt();
-        moveOrderPos.x = reader.ReadFloat();
-        moveOrderPos.y = reader.ReadFloat();
-        moveOrderPos.z = reader.ReadFloat();
-    }
-
-    public void Serialize(ref DataStreamWriter writer, UserCmd baseline, NetworkCompressionModel compressionModel)
-    {
-        Serialize(ref writer);
-    }
-
-    public void Deserialize(uint tick, ref DataStreamReader reader, UserCmd baseline, NetworkCompressionModel compressionModel)
-    {
-        Deserialize(tick, ref reader);
-    }
 }
 
 // User cmd send
-public class UserSendCommandSystem : CommandSendSystem<UserCmd>
+public class UserCmdSendCommandSystem : CommandSendSystem<UserCmd>
 {
+    protected override JobHandle OnUpdate(JobHandle inputDeps)
+    {
+        return base.OnUpdate(inputDeps);
+    }
 }
 
 // User cmd receive
 public class UserCmdReceiveCommandSystem : CommandReceiveSystem<UserCmd>
 {
+    protected override JobHandle OnUpdate(JobHandle inputDeps)
+    {
+        return base.OnUpdate(inputDeps);
+    }
 }

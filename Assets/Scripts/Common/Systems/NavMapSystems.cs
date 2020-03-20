@@ -7,6 +7,10 @@ using Unity.NetCode;
 using Unity.Mathematics;
 using System.Runtime.CompilerServices;
 using Unity.Collections.LowLevel.Unsafe;
+using UnityEngine;
+using Collider = Unity.Physics.Collider;
+using BoxCollider = Unity.Physics.BoxCollider;
+using Unity.Transforms;
 
 public unsafe static class NavMapSystems
 {
@@ -50,8 +54,8 @@ public unsafe static class NavMapSystems
                                 nodes[NavMap.GetIndex(coord, size)] = new NavMapNode
                                 {
                                     Coord = coord,
+                                    Center = centerPos,
                                     Walkable = true,
-                                    Aabb = CreateBoxAABB(centerPos, new float3(1) * nodeSize, quaternion.identity)
                                 };
                             }
                         }
@@ -74,27 +78,14 @@ public unsafe static class NavMapSystems
 
             return default;
         }
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static Aabb CreateBoxAABB(float3 center, float3 size, quaternion orientation)
-        {
-            var rigidbodyBox = RigidBody.Zero;
-
-            rigidbodyBox.Collider = Unity.Physics.BoxCollider.Create(new BoxGeometry
-            {
-                Center = center,
-                Orientation = orientation,
-                Size = size,
-            });
-
-            return rigidbodyBox.CalculateAabb();
-        }
     }
 
-    [UpdateInGroup(typeof(LateSimulationSystemGroup))]
+    [UpdateInGroup(typeof(SimulationSystemGroup))]
     public class UpdateWalkables : JobComponentSystem
     {
         public struct UpdateRequest : IComponentData { }
+
+        private const float RAYCAST_DISTANCE = 5f;
 
         protected override void OnCreate()
         {
@@ -104,13 +95,36 @@ public unsafe static class NavMapSystems
 
         protected override JobHandle OnUpdate(JobHandle inputDeps)
         {
-            var navMap = GetSingleton<NavMap>();
-
             var physicsWorldSystem = World.GetExistingSystem<Unity.Physics.Systems.BuildPhysicsWorld>();
-
             var collisionWorld = physicsWorldSystem.PhysicsWorld.CollisionWorld;
 
-            inputDeps = BuildJob.Schedule(navMap.NodesPtr, ref collisionWorld, navMap.Count);
+            var navMap = GetSingleton<NavMap>();
+            var ptr = navMap.NodesPtr;
+
+            inputDeps = (new ResetNavMapJob { Ptr = ptr }).Schedule(navMap.Count, 32, inputDeps);
+
+            inputDeps.Complete();
+
+            inputDeps = Entities
+                .WithNativeDisableUnsafePtrRestriction(ptr)
+                .WithAll<NavObstacle>()
+                .ForEach((ref PhysicsCollider collider, ref Translation translation, ref Rotation rotation) =>
+                {
+                    var ribt = new RigidTransform(rotation.Value, translation.Value);
+                    var aabb = collider.ColliderPtr->CalculateAabb(ribt);
+                    var inc = navMap.NodeSize * .5f;
+                    for (var x = aabb.Min.x; x < aabb.Max.x; x += inc)
+                    {
+                        for (var z = aabb.Min.z; z < aabb.Max.z; z += inc)
+                        {
+                            var localPos = navMap.Transform.GetLocalPos(new float3(x, 0, z));
+                            var idx = NavMap.GetIndex(NavMap.ToMapCoord(localPos, navMap.NodeSize), navMap.Size);
+                            var from = ptr[idx].Center;
+                            var to = from + new float3(0, RAYCAST_DISTANCE, 0);
+                            ptr[idx].Walkable = !BoxCast(from, to, new float3(navMap.NodeSize), ref collisionWorld, 8);
+                        }
+                    }
+                }).Schedule(inputDeps);
 
             inputDeps.Complete();
 
@@ -122,36 +136,45 @@ public unsafe static class NavMapSystems
         }
 
         [BurstCompile]
-        private struct BuildJob : IJobParallelFor
+        private struct ResetNavMapJob : IJobParallelFor
         {
-            [NativeDisableUnsafePtrRestriction] public NavMapNode* Ptr;
-            [ReadOnly] public CollisionWorld World;
+            [NativeDisableUnsafePtrRestriction]
+            public NavMapNode* Ptr;
 
             public void Execute(int index)
             {
-                var allHits = new NativeList<int>(Allocator.Temp);
-
-                var input = new OverlapAabbInput
-                {
-                    Aabb = Ptr[index].Aabb,
-                    Filter = new CollisionFilter()
-                    {
-                        BelongsTo = ~0u,
-                        CollidesWith = 1u << 8, // Obstacle layer
-                        GroupIndex = 0
-                    }
-                };
-
-                World.OverlapAabb(input, ref allHits);
-                Ptr[index].Walkable = allHits.Length <= 0;
-                allHits.Dispose();
+                Ptr[index].Walkable = true;
             }
+        }
 
-            // TODO: Improve perf, ex. Specify a range of indices to check instead of whole grid
-            public static JobHandle Schedule(NavMapNode* Ptr, ref CollisionWorld World, int count)
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool BoxCast(float3 from, float3 to, float3 size, ref CollisionWorld world, int layer = 0)
+        {
+            var filter = new CollisionFilter()
             {
-                return (new BuildJob { Ptr = Ptr, World = World }).Schedule(count, 64);
-            }
+                BelongsTo = ~0u,
+                CollidesWith = 1u << layer,
+                GroupIndex = 0
+            };
+            // TODO: cache colliders?
+            var collider = BoxCollider.Create(new BoxGeometry
+            {
+                Center = float3.zero,
+                Size = new float3(1) * size,
+                Orientation = quaternion.identity,
+            }, filter);
+
+            var hit = world.CastCollider(new ColliderCastInput()
+            {
+                Collider = (Collider*)collider.GetUnsafePtr(),
+                Orientation = quaternion.identity,
+                Start = from,
+                End = to
+            });
+
+            collider.Dispose();
+
+            return hit;
         }
     }
 }

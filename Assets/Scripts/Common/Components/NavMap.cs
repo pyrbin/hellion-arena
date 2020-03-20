@@ -5,7 +5,7 @@ using Unity.Mathematics;
 using Unity.Physics;
 using Unity.NetCode;
 
-public struct NavMap : IComponentData
+public unsafe struct NavMap : IComponentData
 {
     public int3 Size;
 
@@ -15,7 +15,7 @@ public struct NavMap : IComponentData
 
     public BlobAssetReference<NavMapBlob> Blob;
     public ref BlobArray<NavMapNode> Nodes => ref Blob.Value.Nodes;
-    public unsafe NavMapNode* NodesPtr => (NavMapNode*)Blob.Value.Nodes.GetUnsafePtr();
+    public NavMapNode* NodesPtr => (NavMapNode*)Blob.Value.Nodes.GetUnsafePtr();
 
     public int Count => NodeCount(Size);
 
@@ -71,6 +71,6 @@ public struct NavMapBlob
 public struct NavMapNode
 {
     public int3 Coord;
+    public float3 Center;
     public bool Walkable;
-    public Aabb Aabb;
 }

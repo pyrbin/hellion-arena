@@ -46,4 +46,6 @@ MonoBehaviour:
   SerializerCollectionPath: ../Scripts/Server/Generated/GhostSerializerCollection.cs
   DeserializerCollectionPath: ../Scripts/Client/Generated/GhostDeserializerCollection.cs
   NamePrefix: Hellion
-  Ghosts: []
+  Ghosts:
+  - prefab: {fileID: 8971790768381994523, guid: d292fd6ad5b3a5848977c4b7c5d419d6, type: 3}
+    enabled: 1

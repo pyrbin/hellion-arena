@@ -3,6 +3,7 @@ using Unity.Entities;
 using Unity.NetCode;
 using Unity.Networking.Transport;
 using Unity.Burst;
+using UnityEngine;
 
 // Control system updating in the default world
 [UpdateInWorld(UpdateInWorld.TargetWorld.Default)]
@@ -85,6 +86,8 @@ public class GoInGameRequestSystem : RpcCommandRequestSystem<GoInGameRequest> { 
 [UpdateInGroup(typeof(ClientSimulationSystemGroup))]
 public class GoInGameClientSystem : ComponentSystem
 {
+    protected override void OnCreate() => RequireSingletonForUpdate<EnableHellionGhostReceiveSystemComponent>();
+
     protected override void OnUpdate() => Entities
         .WithAll<NetworkIdComponent>()
         .WithNone<NetworkStreamInGame>()
@@ -101,23 +104,24 @@ public class GoInGameClientSystem : ComponentSystem
 [UpdateInGroup(typeof(ServerSimulationSystemGroup))]
 public class GoInGameServerSystem : ComponentSystem
 {
+    protected override void OnCreate() => RequireSingletonForUpdate<EnableHellionGhostSendSystemComponent>();
+
     protected override void OnUpdate() => Entities
         .WithNone<SendRpcCommandRequestComponent>()
-        .ForEach((Entity reqEnt, ref GoInGameRequest req, ref ReceiveRpcCommandRequestComponent reqSrc) =>
+        .ForEach((Entity entity, ref GoInGameRequest req, ref ReceiveRpcCommandRequestComponent rpcCmd) =>
         {
-            /*
-            PostUpdateCommands.AddComponent<NetworkStreamInGame>(reqSrc.SourceConnection);
-            UnityEngine.Debug.Log(String.Format("Server setting connection {0} to in game", EntityManager.GetComponentData<NetworkIdComponent>(reqSrc.SourceConnection).Value));
+            PostUpdateCommands.AddComponent<NetworkStreamInGame>(rpcCmd.SourceConnection);
+            UnityEngine.Debug.Log(String.Format("Server setting connection {0} to in game", EntityManager.GetComponentData<NetworkIdComponent>(rpcCmd.SourceConnection).Value));
             var ghostCollection = GetSingleton<GhostPrefabCollectionComponent>();
 
-            var ghostId = HellionGhostSerializerCollection.FindGhostType<ActorSnapshotData>();
+            var ghostId = HellionGhostSerializerCollection.FindGhostType<UnitSnapshotData>();
             var prefab = EntityManager.GetBuffer<GhostPrefabBuffer>(ghostCollection.serverPrefabs)[ghostId].Value;
             var player = EntityManager.Instantiate(prefab);
 
-            EntityManager.SetComponentData(player, new Actor { PlayerId = EntityManager.GetComponentData<NetworkIdComponent>(reqSrc.SourceConnection).Value });
+            EntityManager.SetComponentData(player, new PlayerId { Value = EntityManager.GetComponentData<NetworkIdComponent>(rpcCmd.SourceConnection).Value });
+
             PostUpdateCommands.AddBuffer<UserCmd>(player);
-            PostUpdateCommands.SetComponent(reqSrc.SourceConnection, new CommandTargetComponent { targetEntity = player });
-            PostUpdateCommands.DestroyEntity(reqEnt);
-            */
+            PostUpdateCommands.SetComponent(rpcCmd.SourceConnection, new CommandTargetComponent { targetEntity = player });
+            PostUpdateCommands.DestroyEntity(entity);
         });
 }

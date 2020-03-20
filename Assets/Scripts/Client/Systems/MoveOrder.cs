@@ -4,13 +4,13 @@ using Unity.Entities;
 using Unity.Jobs;
 using Unity.Mathematics;
 using Unity.Physics;
-using Unity.Transforms;
 
-public static class MovementOrder
+public static class MoveOrder
 {
-    public struct Request : IComponentData
+    public struct RequestComponent : IComponentData
     {
         public float3 To;
+        public float3 From;
     }
 
     [UpdateInGroup(typeof(SimulationSystemGroup))]
@@ -45,14 +45,13 @@ public static class MovementOrder
             // Execute job
             inputDeps = Entities
                 .WithAll<NavAgent>()
-                .WithNone<Waypoint>()
-                .ForEach((Entity entity, int entityInQueryIndex, Request req, ref Translation translation) =>
+                .ForEach((Entity entity, int entityInQueryIndex, RequestComponent req) =>
                 {
                     // Consume request component
-                    cmdBuffer.RemoveComponent<Request>(entityInQueryIndex, entity);
+                    cmdBuffer.RemoveComponent<RequestComponent>(entityInQueryIndex, entity);
 
                     // Try find path using AStar
-                    if (!AStarPathfinding.Solve(translation.Value, req.To, ref navMap, ref neighboursRef, out var path, out var cursor)) return;
+                    if (!AStarPathfinding.Solve(req.From, req.To, ref navMap, ref neighboursRef, out var path, out var cursor)) return;
 
                     if (path[cursor] != -1)
                     {
@@ -62,7 +61,7 @@ public static class MovementOrder
                         {
                             var coord = navMap.NodesPtr[cursor].Coord;
                             var worldPos = transform.GetWorldPos(NavMap.ToCenterPos(coord, navMap.NodeSize));
-                            var pathPoint = new float3(worldPos.x, translation.Value.y, worldPos.z);
+                            var pathPoint = new float3(worldPos.x, req.From.y, worldPos.z);
                             waypoints.Add(new Waypoint() { Value = pathPoint });
                             cursor = path[cursor];
                         }
