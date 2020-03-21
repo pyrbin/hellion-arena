@@ -22,13 +22,13 @@ public unsafe struct NavMap : IComponentData
     #region Helpers
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static bool NotOutOfBounds(int3 coord, int3 size)
-        => coord.x >= 0 &&
+    public static bool OutOfBounds(int3 coord, int3 size)
+        => !(coord.x >= 0 &&
            coord.y >= 0 &&
            coord.z >= 0 &&
            coord.x < size.x &&
            coord.y < size.y &&
-           coord.z < size.z;
+           coord.z < size.z);
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static float3 ToCenterPos(int3 coord, float nodeSize)

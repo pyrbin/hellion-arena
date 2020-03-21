@@ -21,7 +21,9 @@ public class WaypointVisualizer : JobComponentSystem
                 for (int i = waypoints.Length - 1; i >= 0; i--)
                 {
                     var src = i == waypoints.Length - 1 ? PositionUtil.SetY(translation.Value) : PositionUtil.SetY(waypoints[i + 1].Value);
-                    Debug.DrawLine(src, PositionUtil.SetY(waypoints[i].Value), Color.magenta);
+                    var dst = PositionUtil.SetY(waypoints[i].Value);
+
+                    Debug.DrawLine(src, dst, Color.yellow);
                 }
             }).Run();
         return default;

@@ -9,7 +9,6 @@ using UnityEngine;
 public class NavMapVisualizer : MonoBehaviour
 {
     public bool Enable = true;
-    public bool WireCubes = false;
 
     public Color NormalColor;
     public Color UnwalkableColor;
@@ -31,11 +30,7 @@ public class NavMapVisualizer : MonoBehaviour
 
     public unsafe void OnDrawGizmos()
     {
-        if (!Enable) return;
-
-        NavMap? fetch;
-
-        if (!HasSpawned(out fetch)) return;
+        if (!Enable || !HasSpawned(out var fetch)) return;
 
         var navmap = (NavMap)fetch;
 
@@ -46,8 +41,14 @@ public class NavMapVisualizer : MonoBehaviour
 
             var centerPos = navmap.Transform.GetWorldPos(NavMap.ToCenterPos(node.Coord, navmap.NodeSize));
 
-            if (WireCubes) Gizmos.DrawWireCube(centerPos, new float3(navmap.NodeSize, 0, navmap.NodeSize));
-            else Gizmos.DrawCube(centerPos, new float3(navmap.NodeSize, 0, navmap.NodeSize));
+            if (node.Walkable)
+            {
+                Gizmos.DrawWireCube(centerPos, new float3(navmap.NodeSize, 0, navmap.NodeSize));
+            }
+            else
+            {
+                Gizmos.DrawWireSphere(centerPos, 0.05f);
+            }
         }
     }
 }

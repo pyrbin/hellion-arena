@@ -95,7 +95,7 @@ public static class MoveOrder
             firstIndex = startIdx;
 
             // If destination node is invalid skip AStar search.
-            if (!NavMap.NotOutOfBounds(map.NodesPtr[endIdx].Coord, map.Size) || !map.NodesPtr[endIdx].Walkable) return false;
+            if (NavMap.OutOfBounds(map.NodesPtr[endIdx].Coord, map.Size) || !map.NodesPtr[endIdx].Walkable) return false;
 
             var openList = new NativeList<int>(Allocator.Temp);
             var closeList = new NativeList<int>(Allocator.Temp);
@@ -142,7 +142,7 @@ public static class MoveOrder
                     var neighbourDst = neighbourOffsets[i].Distance;
 
                     // If node is outside of map
-                    if (!NavMap.NotOutOfBounds(neighbourCoord, map.Size)) continue;
+                    if (NavMap.OutOfBounds(neighbourCoord, map.Size)) continue;
 
                     int neighbourIdx = NavMap.GetIndex(neighbourCoord, map.Size);
                     var neighbourNode = map.NodesPtr[neighbourIdx];

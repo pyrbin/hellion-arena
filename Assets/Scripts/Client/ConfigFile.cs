@@ -26,8 +26,8 @@ public static class ConfigFile
         {
             Tables = { new TableSyntax("server") {
                     Items = {
-                        {"ip", config.Ip},
-                        {"port", config.Port },
+                        { "ip", config.Ip },
+                        { "port", config.Port },
                     }
                 }
             }

@@ -9,7 +9,7 @@ using System.Runtime.CompilerServices;
 using Unity.Collections.LowLevel.Unsafe;
 using UnityEngine;
 using Collider = Unity.Physics.Collider;
-using BoxCollider = Unity.Physics.BoxCollider;
+using SphereCollider = Unity.Physics.SphereCollider;
 using Unity.Transforms;
 
 public unsafe static class NavMapSystems
@@ -86,6 +86,7 @@ public unsafe static class NavMapSystems
         public struct UpdateRequest : IComponentData { }
 
         private const float RAYCAST_DISTANCE = 5f;
+        private const float NODE_SIZE_MULT = 0.75f;
 
         protected override void OnCreate()
         {
@@ -118,10 +119,14 @@ public unsafe static class NavMapSystems
                         for (var z = aabb.Min.z; z < aabb.Max.z; z += inc)
                         {
                             var localPos = navMap.Transform.GetLocalPos(new float3(x, 0, z));
-                            var idx = NavMap.GetIndex(NavMap.ToMapCoord(localPos, navMap.NodeSize), navMap.Size);
+                            var coords = NavMap.ToMapCoord(localPos, navMap.NodeSize);
+
+                            if (NavMap.OutOfBounds(coords, navMap.Size)) continue;
+
+                            var idx = NavMap.GetIndex(coords, navMap.Size);
                             var from = ptr[idx].Center;
                             var to = from + new float3(0, RAYCAST_DISTANCE, 0);
-                            ptr[idx].Walkable = !BoxCast(from, to, new float3(navMap.NodeSize), ref collisionWorld, 8);
+                            ptr[idx].Walkable = !SphereCast(from, to, (navMap.NodeSize * NODE_SIZE_MULT) / 2f, ref collisionWorld, 8);
                         }
                     }
                 }).Schedule(inputDeps);
@@ -148,7 +153,7 @@ public unsafe static class NavMapSystems
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static bool BoxCast(float3 from, float3 to, float3 size, ref CollisionWorld world, int layer = 0)
+        public static bool SphereCast(float3 from, float3 to, float radius, ref CollisionWorld world, int layer = 0)
         {
             var filter = new CollisionFilter()
             {
@@ -157,11 +162,10 @@ public unsafe static class NavMapSystems
                 GroupIndex = 0
             };
             // TODO: cache colliders?
-            var collider = BoxCollider.Create(new BoxGeometry
+            var collider = SphereCollider.Create(new SphereGeometry
             {
                 Center = float3.zero,
-                Size = new float3(1) * size,
-                Orientation = quaternion.identity,
+                Radius = radius,
             }, filter);
 
             var hit = world.CastCollider(new ColliderCastInput()

@@ -11,7 +11,6 @@ public struct UnitGhostSerializer : IGhostSerializer<UnitSnapshotData>
     private ComponentType componentTypePlayerId;
     private ComponentType componentTypeUnit;
     private ComponentType componentTypePhysicsCollider;
-    private ComponentType componentTypePhysicsMass;
     private ComponentType componentTypeLocalToWorld;
     private ComponentType componentTypeRotation;
     private ComponentType componentTypeTranslation;
@@ -33,7 +32,6 @@ public struct UnitGhostSerializer : IGhostSerializer<UnitSnapshotData>
         componentTypePlayerId = ComponentType.ReadWrite<PlayerId>();
         componentTypeUnit = ComponentType.ReadWrite<Unit>();
         componentTypePhysicsCollider = ComponentType.ReadWrite<PhysicsCollider>();
-        componentTypePhysicsMass = ComponentType.ReadWrite<PhysicsMass>();
         componentTypeLocalToWorld = ComponentType.ReadWrite<LocalToWorld>();
         componentTypeRotation = ComponentType.ReadWrite<Rotation>();
         componentTypeTranslation = ComponentType.ReadWrite<Translation>();
