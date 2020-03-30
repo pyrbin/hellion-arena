@@ -953,6 +953,10 @@ PrefabInstance:
       propertyPath: NormalColor.a
       value: 0.14117648
       objectReference: {fileID: 0}
+    - target: {fileID: 272802446, guid: b73a83d718ff3484d853f44fd5ee72bd, type: 3}
+      propertyPath: Enable
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 479146632244519139, guid: b73a83d718ff3484d853f44fd5ee72bd, type: 3}
       propertyPath: m_Name
       value: Navigation Visualizer
